@@ -1,9 +1,14 @@
 <script setup lang="ts">
 	import { ref } from "vue";
+	import { fullTestInvoked } from "../main";
 
 	defineProps<{ msg: string }>();
 
 	const count = ref(0);
+
+	function fulltest() {
+		fullTestInvoked();
+	}
 </script>
 
 <template>
@@ -29,6 +34,7 @@
 		in your IDE for a better DX
 	</p>
 	<p class="read-the-docs">Click on the Vite and Vue logos to learn more</p>
+	<p>Click <button @click="fulltest()">here</button> to test SimplyDMX on the iPad</p>
 </template>
 
 <style scoped>
