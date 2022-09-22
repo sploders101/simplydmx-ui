@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+	import { ref } from "vue";
 	import { IconPath } from "./icon.vue";
 
 	const props = defineProps<{
@@ -10,12 +11,21 @@
 		(event: "focus"): void,
 		(event: "blur"): void,
 	}>();
+
+	const textbox = ref<HTMLInputElement | null>(null);
 </script>
 
 <template>
-	<div class="sdmx-textbox">
+	<div
+		class="sdmx-textbox"
+		@click="textbox?.focus()"
+		>
 		<input
 			type="text"
+			ref="textbox"
+			autocomplete="off"
+			spellcheck="false"
+			autocapitalize="off"
 			:value="props.modelValue"
 			@input="emit('update:modelValue', ($event.target as HTMLInputElement).value)"
 			@focus="emit('focus')"
@@ -27,33 +37,41 @@
 
 <style lang="scss">
 	.sdmx-textbox {
-		display: block;
-		position: relative;
+		display: flex;
+		flex-flow: row nowrap;
+		align-items: center;
 		margin: 0.75rem;
 
-		& > input {
-			height: 100%;
-			width: 100%;
-			outline: none;
-			border: 1px solid var(--unfocused-border-color);
-			padding: 0.5rem;
-			font-size: 1.125rem;
-			transition: border-color 200ms, box-shadow 200ms;
-			box-shadow: var(--unfocused-shadow);
-			border-radius: 0.5rem;
-			background: var(--input-background);
+		outline: none;
+		border: 1px solid var(--unfocused-border-color);
+		font-size: 1.125rem;
+		transition: border-color 200ms, box-shadow 200ms;
+		box-shadow: var(--unfocused-shadow);
+		border-radius: 0.5rem;
+		background: var(--input-background);
+		padding: 0.5rem;
 
-			&:focus {
-				border: 1px solid var(--focused-border-color);
-				box-shadow: var(--focused-shadow);
-			}
+		cursor: text;
+
+		&:has(input:focus) {
+			border: 1px solid var(--focused-border-color);
+			box-shadow: var(--focused-shadow);
+		}
+
+		& > input {
+			background: transparent;
+			outline: none;
+			border: none;
+
+			text-overflow: ellipsis;
+
+			flex-grow: 1;
 		}
 
 		& > .trailing-icon {
-			position: absolute;
-			top: 10%;
-			right: 5px;
-			height: 80%;
+			height: 1.5em;
+			width: 1.5em;
+			scale: 1.25;
 		}
 	}
 </style>

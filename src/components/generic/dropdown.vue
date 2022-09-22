@@ -68,21 +68,35 @@
 
 	// User searchability
 	const searchValue = ref("");
+	const useSearchValue = ref(false);
 	const filteredOptions = computed(() => {
-		if (searchValue.value === "") return props.options;
+		if (!useSearchValue.value || searchValue.value === "") return props.options;
+		const regex = new RegExp(searchValue.value.replace(/([\\\[\]\(\)\.\?\*\+\^\$\/\|])/g, "\\$1"), "i");
 		return props.options.filter((option) => {
-			return option.name.includes(searchValue.value);
+			return Boolean(option.name.match(regex));
 		});
 	});
 
-	watch(() => props.modelValue, () => {
+	watch(() => props.modelValue, resetSearch, { immediate: true });
+
+	function updateValue(option: Option) {
+		emit('update:modelValue', option.value);
+		dropdownOpen.value = false;
+	}
+
+	function resetSearch() {
 		let foundOption = props.options.find((option) => option.value === props.modelValue);
 		if (foundOption) {
 			searchValue.value = foundOption.name;
 		} else if (props.modelValue !== null) {
 			emit("update:modelValue", null);
 		}
-	}, { immediate: true });
+	}
+
+	function handleBlur() {
+		dropdownOpen.value = false;
+		resetSearch();
+	}
 </script>
 
 <template>
@@ -91,8 +105,11 @@
 		v-model="searchValue"
 		icon-right="chevronDown"
 		:class="{ 'dropdown-open': dropdownOpen }"
-		@focus="dropdownOpen = true"
-		@blur="dropdownOpen = false"
+		@focus="dropdownOpen = true; useSearchValue = false"
+		@input="dropdownOpen = true; useSearchValue = true"
+		@blur="handleBlur()"
+		@click="dropdownOpen = true"
+		@keypress.esc.prevent="dropdownOpen = false"
 		/>
 	<transition name="sdmx-dropdown-overlay">
 		<div
@@ -104,12 +121,14 @@
 				top: dropdownPos.top + 'px',
 				left: dropdownPos.left + 'px',
 				'--target-height': dropdownInnerSize.height.value + 'px',
-			}">
+			}"
+			@mousedown.prevent
+			>
 			<div ref="dropdownOverlayInner" class="sdmx-dropdown-wrapper">
 				<div
 					v-for="option in filteredOptions"
 					class="sdmx-dropdown-option"
-					@mousedown="emit('update:modelValue', option.value)"
+					@click="updateValue(option)"
 					>
 					{{ option.name }}
 				</div>
