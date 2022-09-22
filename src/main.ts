@@ -1,6 +1,8 @@
 import { createApp } from "vue";
-import "./style.css";
+import "@/assets/theme.scss";
+import "@/assets/style.scss";
 import App from "./App.vue";
+import "normalize.css";
 
 import * as rpc from "./scripts/api/ipc";
 import * as mixer from "./scripts/api/mixer";
@@ -8,8 +10,13 @@ import * as patcher from "./scripts/api/patcher";
 import { BlenderValue } from "./scripts/api/types/mixer";
 import { createUniverse, linkUniverse } from "./scripts/api/outputDrivers/dmx";
 import { DMXFixtureInstance } from "./scripts/api/types/outputDriver/dmx";
+import { registerGlobals } from "@/globalComponents";
+import router from "./router";
 
-createApp(App).mount("#app");
+let app = createApp(App);
+app.use(router);
+registerGlobals(app);
+app.mount("#app");
 
 (window as any).rpc = rpc;
 (window as any).mixer = mixer;

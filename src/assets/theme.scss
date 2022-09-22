@@ -1,0 +1,29 @@
+$background-color: #242424;
+$foreground-color: rgb(255, 255, 255, 0.9);
+$accent-color: #EB7100;
+
+:root {
+	// Color palette
+	--background-color: #{$background-color};
+	--sidebar-color: #{darken($background-color, 3%)};
+	--accent-color: #{$accent-color};
+	--text-color: #{$foreground-color};
+	--input-background: rgb(30, 30, 30);
+	--option-hover: #{lighten($background-color, 20%)};
+
+	// Sidebar
+	--sidebar-link-background: #{lighten($background-color, 5%)};
+	--sidebar-icon-color: #{$foreground-color};
+	--layout-border: 1px solid var(--unfocused-border-color);
+
+	// Tooltip
+	--tooltip-background: rgb(0, 0, 0, 0.5);
+	--tooltip-backdrop-filter: blur(3px);
+	--tooltip-text-color: white;
+
+	// Focus/Blur
+	--unfocused-border-color: #{lighten($background-color, 20%)};
+	--unfocused-shadow: none;
+	--focused-border-color: var(--accent-color);
+	--focused-shadow: 0 0 0.5rem 0 var(--accent-color), inset 0 0 5px 5px rgba(0, 0, 0, 0.25);
+}
