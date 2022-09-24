@@ -54,7 +54,7 @@
 				width: 3rem;
 				height: 3rem;
 				background-color: var(--sidebar-link-background);
-				border-radius: 0.5rem;
+				border-radius: var(--border-radius);
 
 				transition: box-shadow 200ms;
 

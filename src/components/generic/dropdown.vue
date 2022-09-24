@@ -161,8 +161,10 @@
 	.sdmx-dropdown-overlay {
 		position: absolute;
 		max-height: 20rem;
-		background: var(--input-background);
-		border-radius: 0.5rem;
+		background: var(--popover-background);
+		backdrop-filter: var(--popover-backdrop-filter);
+		-webkit-backdrop-filter: var(--popover-backdrop-filter);
+		border-radius: var(--border-radius);
 		margin-top: 0;
 		overflow: auto;
 		transition: height 200ms;
@@ -175,8 +177,7 @@
 
 			.sdmx-dropdown-option {
 				padding: 0.5rem;
-				// margin: 0.25rem;
-				border-radius: 10px;
+				border-radius: var(--border-radius);
 				cursor: pointer;
 
 				&:hover {

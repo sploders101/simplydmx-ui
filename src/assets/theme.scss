@@ -1,12 +1,12 @@
 $background-color: #242424;
 $foreground-color: rgb(255, 255, 255, 0.9);
-$accent-color: #EB7100;
+$accent-color: 235, 113, 0;
 
 :root {
 	// Color palette
 	--background-color: #{$background-color};
 	--sidebar-color: #{darken($background-color, 3%)};
-	--accent-color: #{$accent-color};
+	--accent-color: rgb(#{$accent-color});
 	--text-color: #{$foreground-color};
 	--input-background: rgb(30, 30, 30);
 	--option-hover: #{lighten($background-color, 20%)};
@@ -21,9 +21,20 @@ $accent-color: #EB7100;
 	--tooltip-backdrop-filter: blur(3px);
 	--tooltip-text-color: white;
 
+	// Rounded corners
+	--border-radius: 0.5rem;
+	--border-radius-tooltip: 3px;
+
+	// Popover properties
+	--popover-background: var(--tooltip-background);
+	--popover-backdrop-filter: blur(3px);
+
 	// Focus/Blur
 	--unfocused-border-color: #{lighten($background-color, 20%)};
 	--unfocused-shadow: none;
 	--focused-border-color: var(--accent-color);
 	--focused-shadow: 0 0 0.5rem 0 var(--accent-color), inset 0 0 5px 5px rgba(0, 0, 0, 0.25);
+
+	// Hover
+	--button-hover-bg: rgba(#{$accent-color}, 0.25);
 }
