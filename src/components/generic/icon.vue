@@ -4,6 +4,7 @@
 		mdiTuneVerticalVariant,
 		mdiChevronDown,
 		mdiChevronUp,
+		mdiSpotlightBeam,
 	} from "@mdi/js";
 
 	const paths = {
@@ -12,6 +13,7 @@
 		midi: mdiTuneVerticalVariant,
 		chevronDown: mdiChevronDown,
 		chevronUp: mdiChevronUp,
+		stageLight: mdiSpotlightBeam,
 	} as const;
 
 	export type IconPath = keyof typeof paths;
