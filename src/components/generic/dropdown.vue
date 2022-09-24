@@ -108,7 +108,7 @@
 		@focus="dropdownOpen = true; useSearchValue = false"
 		@input="dropdownOpen = true; useSearchValue = true"
 		@blur="handleBlur()"
-		@click="dropdownOpen = true"
+		@mousedown="dropdownOpen = true"
 		@keypress.esc.prevent="dropdownOpen = false"
 		/>
 	<transition name="sdmx-dropdown-overlay">

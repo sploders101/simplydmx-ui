@@ -21,6 +21,10 @@
 			value: "test4",
 		},
 	]
+
+	function testButton() {
+		alert("Hello!");
+	}
 </script>
 
 <template>
@@ -28,6 +32,7 @@
 	<p>{{ test2 }}</p>
 	<Textbox v-model="test" />
 	<Dropdown v-model="test2" :options="options" />
+	<Button @click="testButton()">Hello</button>
 </template>
 
 <style lang="scss" scoped>
