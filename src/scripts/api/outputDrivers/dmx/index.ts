@@ -1,6 +1,6 @@
-import { callService } from "../ipc";
-import { DMXDriverData } from "../types/outputDriver/dmx";
-import { Uuid } from "../types/patcherFixtureTypes";
+import { callService } from "../../ipc";
+import { DMXDriverData } from "./types";
+import { Uuid } from "../../patcher/types/fixtureTypes";
 
 export function createUniverse() {
 	return callService<[], Uuid>("output-dmx", "create_universe");

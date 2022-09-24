@@ -1,4 +1,4 @@
-import { Uuid } from "../../patcherFixtureTypes";
+import { Uuid } from "../../../patcher/types/fixtureTypes";
 import { E131Universe } from "./drivers/e131";
 
 export interface DMXFixtureData {

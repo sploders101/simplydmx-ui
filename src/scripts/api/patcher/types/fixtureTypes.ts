@@ -1,5 +1,5 @@
-import { BlendingScheme, SnapData } from "./mixer";
-import { DMXFixtureData } from "./outputDriver/dmx";
+import { BlendingScheme, SnapData } from "../../types/mixer";
+import { DMXFixtureData } from "../../outputDrivers/dmx/types";
 
 export type Uuid = string;
 

@@ -1,4 +1,4 @@
-import { Uuid } from "./patcherFixtureTypes";
+import { Uuid } from "../patcher/types/fixtureTypes";
 
 export type BlendingScheme = "HTP" | "LTP";
 

@@ -1,6 +1,6 @@
 import { callService } from "./ipc";
 import { BlenderValue, Submaster, SubmasterDelta } from "./types/mixer";
-import { Uuid } from "./types/patcherFixtureTypes";
+import { Uuid } from "./patcher/types/fixtureTypes";
 
 export async function enterBlindMode() {
 	let oldBinId = await callService<[], Uuid | null>("mixer", "enter_blind_mode");
