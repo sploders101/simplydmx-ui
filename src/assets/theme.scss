@@ -1,12 +1,12 @@
 $background-color: #242424;
 $foreground-color: rgb(255, 255, 255, 0.9);
-$accent-color: #EB7100;
+$accent-color: 235, 113, 0;
 
 :root {
 	// Color palette
 	--background-color: #{$background-color};
 	--sidebar-color: #{darken($background-color, 3%)};
-	--accent-color: #{$accent-color};
+	--accent-color: rgb(#{$accent-color});
 	--text-color: #{$foreground-color};
 	--input-background: rgb(30, 30, 30);
 	--option-hover: #{lighten($background-color, 20%)};
@@ -20,6 +20,16 @@ $accent-color: #EB7100;
 	--tooltip-background: rgb(0, 0, 0, 0.5);
 	--tooltip-backdrop-filter: blur(3px);
 	--tooltip-text-color: white;
+
+	// Rounded corners
+	--border-radius: 0.5rem;
+	--border-radius-tooltip: 3px;
+
+	// Popover properties
+	// --popover-background: var(--tooltip-background);
+	// --popover-backdrop-filter: blur(3px);
+	--popover-background: var(--input-background);
+	--popover-backdrop-filter: none;
 
 	// Focus/Blur
 	--unfocused-border-color: #{lighten($background-color, 20%)};

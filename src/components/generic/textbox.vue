@@ -47,7 +47,7 @@
 		font-size: 1.125rem;
 		transition: border-color 200ms, box-shadow 200ms;
 		box-shadow: var(--unfocused-shadow);
-		border-radius: 0.5rem;
+		border-radius: var(--border-radius);
 		background: var(--input-background);
 		padding: 0.5rem;
 

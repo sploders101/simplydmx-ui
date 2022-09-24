@@ -73,7 +73,7 @@
 		-webkit-backdrop-filter: var(--tooltip-backdrop-filter);
 		color: var(--tooltip-text-color);
 		pointer-events: none;
-		border-radius: 3px;
+		border-radius: var(--border-radius-tooltip);
 		padding: 0.2rem;
 		position: fixed;
 		top: 0;
