@@ -4,11 +4,10 @@ import {
 	ChannelSize,
 	FixtureBundle,
 	Uuid,
-} from "../patcher/types/fixtureTypes";
+} from "./types/fixtureTypes";
+export * from "./types/fixtureTypes";
 
-export function assert<T>(msg: T): T {
-	return msg;
-}
+const assert = <T>(v:T)=>v;
 
 export function importFixture(fixtureBundle: FixtureBundle): Promise<void> {
 	return callService("patcher", "import_fixture", fixtureBundle);
