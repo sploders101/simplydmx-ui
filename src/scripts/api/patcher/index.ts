@@ -17,6 +17,11 @@ export function createFixture<DriverData>(fixture_type: Uuid, personality: Strin
 	return callService("patcher", "create_fixture", fixture_type, personality, name, comments, form_data);
 }
 
+export function listenForUpdates() {
+
+}
+
+// Examples
 const intensityChannel = (size: ChannelSize): Channel => ({
 	size,
 	ch_type: {
