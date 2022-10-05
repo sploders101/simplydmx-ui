@@ -6,7 +6,15 @@
 </script>
 
 <script lang="ts" setup>
-	import { computed, onBeforeUnmount, PropType, reactive, ref, watch } from "vue";
+	import {
+		computed,
+		nextTick,
+		onBeforeUnmount,
+		PropType,
+		reactive,
+		ref,
+		watch,
+	} from "vue";
 	import { useElementSize } from "@vueuse/core";
 	import { computePosition, flip, autoUpdate } from "@floating-ui/dom";
 	import Textbox from "./textbox.vue";
@@ -97,6 +105,17 @@
 		dropdownOpen.value = false;
 		resetSearch();
 	}
+
+	/** Compensates for a safari bug in which adding new elements with -webkit-backdrop-filter doesn't work */
+	const bdFilterFix = ref<string | undefined>("none");
+	watch(dropdownOpen, async (value) => {
+		if (value) {
+			await nextTick();
+			bdFilterFix.value = "none";
+			await new Promise((res) => setTimeout(res, 50));
+			bdFilterFix.value = undefined;
+		}
+	})
 </script>
 
 <template>
@@ -121,6 +140,7 @@
 				top: dropdownPos.top + 'px',
 				left: dropdownPos.left + 'px',
 				'--target-height': dropdownInnerSize.height.value + 'px',
+				'-webkit-backdrop-filter': bdFilterFix,
 			}"
 			@mousedown.prevent
 			>
@@ -143,7 +163,6 @@
 	@mixin dropdown-animation-dest {
 		height: calc(var(--target-height) + 1rem + #{$border-size * 2});
 		box-shadow: var(--focused-shadow);
-		border: $border-size solid var(--focused-border-color);
 		scale: 1;
 		transform: translate(0, 0.5rem);
 	}
@@ -167,7 +186,10 @@
 		border-radius: var(--border-radius);
 		margin-top: 0;
 		overflow: auto;
-		transition: height 200ms;
+		border: $border-size solid var(--focused-border-color);
+
+		// -webkit-backdrop-filter needed here to mitigate the noticability of a safari bug
+		transition: height 200ms, -webkit-backdrop-filter 200ms;
 
 		@include dropdown-animation-dest();
 
@@ -190,7 +212,6 @@
 	.sdmx-dropdown-overlay-enter-from, .sdmx-dropdown-overlay-leave-to {
 		height: 0;
 		box-shadow: var(--unfocused-shadow);
-		border: none;
 		scale: 0.75;
 		transform: translate(0, 0);
 	}

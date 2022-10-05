@@ -26,10 +26,10 @@ $accent-color: 235, 113, 0;
 	--border-radius-tooltip: 3px;
 
 	// Popover properties
-	// --popover-background: var(--tooltip-background);
-	// --popover-backdrop-filter: blur(3px);
-	--popover-background: var(--input-background);
-	--popover-backdrop-filter: none;
+	--popover-background: var(--tooltip-background);
+	--popover-backdrop-filter: blur(4px);
+	// --popover-background: var(--input-background);
+	// --popover-backdrop-filter: none;
 
 	// Focus/Blur
 	--unfocused-border-color: #{lighten($background-color, 20%)};
