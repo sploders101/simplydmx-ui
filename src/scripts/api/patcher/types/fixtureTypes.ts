@@ -61,3 +61,29 @@ export interface Segment {
 export interface Personality {
 	available_channels: string[];
 }
+
+/** Identifies an individual instance of a fixture */
+export interface  FixtureInstance {
+
+	/** The ID of this particular fixture */
+	id: Uuid,
+
+	/** The ID of this fixture's type */
+	fixture_id: Uuid,
+
+	/** The personality identifier of this fixture */
+	personality: string,
+
+	/** An arbitrary name for this particular instance of the fixture */
+	name: string | null,
+
+	/** Arbitrary comments about this particular instance left by the user */
+	comments: string | null,
+
+}
+
+export interface PatcherState {
+	library: Record<Uuid, FixtureInfo>,
+	fixture_order: Uuid[],
+	fixtures: Record<Uuid, FixtureInstance>,
+}
