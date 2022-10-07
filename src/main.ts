@@ -9,7 +9,7 @@ import * as mixer from "./scripts/api/mixer";
 import * as patcher from "./scripts/api/patcher";
 import { BlenderValue } from "./scripts/api/types/mixer";
 import { createUniverse, linkUniverse } from "./scripts/api/outputDrivers/dmx";
-import { DMXFixtureInstance } from "./scripts/api/types/outputDriver/dmx";
+import { DMXFixtureInstance } from "./scripts/api/outputDrivers/dmx/types";
 import { registerGlobals } from "@/globalComponents";
 import router from "./router";
 
