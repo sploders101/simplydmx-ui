@@ -96,7 +96,7 @@ export function loadFile(file?: number[]) {
 	});
 }
 
-export async function listen(eventName: string, criteria: FilterCriteria, listener: Listener): Promise<() => Promise<void>> {
+export async function listen<T = unknown>(eventName: string, criteria: FilterCriteria, listener: Listener<T>): Promise<() => Promise<void>> {
 	if (!ipcEvents.has(eventName)) {
 		ipcEvents.set(eventName, {
 			none: new Set(),

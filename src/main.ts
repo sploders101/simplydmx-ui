@@ -12,9 +12,11 @@ import { createUniverse, linkUniverse } from "./scripts/api/outputDrivers/dmx";
 import { DMXFixtureInstance } from "./scripts/api/outputDrivers/dmx/types";
 import { registerGlobals } from "@/globalComponents";
 import router from "./router";
+import { createPinia } from "pinia";
 
 let app = createApp(App);
 app.use(router);
+app.use(createPinia());
 registerGlobals(app);
 app.mount("#app");
 

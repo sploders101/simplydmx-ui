@@ -1,8 +1,8 @@
-export type Listener = (msg: Event) => void;
+export type Listener<T = unknown> = (msg: Event<T>) => void;
 export interface ListenersWithCriteria {
-	none: Set<Listener>,
-	string: Map<string, Set<Listener>>,
-	uuid: Map<string, Set<Listener>>,
+	none: Set<Listener<any>>,
+	string: Map<string, Set<Listener<any>>>,
+	uuid: Map<string, Set<Listener<any>>>,
 }
 
 export class IPCError extends Error {
@@ -78,11 +78,11 @@ export interface CallServiceError {
 	error: JSONCallServiceError,
 }
 
-export interface Event {
+export interface Event<T = unknown> {
 	type: "Event",
 	name: string,
 	criteria: FilterCriteria,
-	data: any, // serde_json::Value,
+	data: T, // serde_json::Value,
 }
 
 export interface ServiceDescription {

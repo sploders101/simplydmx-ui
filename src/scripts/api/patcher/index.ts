@@ -1,8 +1,9 @@
-import { callService, sendRPC } from "../ipc";
+import { callService, listen } from "../ipc";
 import {
 	Channel,
 	ChannelSize,
 	FixtureBundle,
+	PatcherState,
 	Uuid,
 } from "./types/fixtureTypes";
 export * from "./types/fixtureTypes";
@@ -13,12 +14,33 @@ export function importFixture(fixtureBundle: FixtureBundle): Promise<void> {
 	return callService("patcher", "import_fixture", fixtureBundle);
 }
 
-export function createFixture<DriverData>(fixture_type: Uuid, personality: String, name: string | null, comments: string | null, form_data: DriverData) {
-	return callService("patcher", "create_fixture", fixture_type, personality, name, comments, form_data);
+export function createFixture<DriverData>(fixture_type: Uuid, personality: string, name: string | null, comments: string | null, form_data: DriverData) {
+	return callService<[Uuid, string, string | null, string | null, DriverData], Uuid>(
+		"patcher",
+		"create_fixture",
+		fixture_type,
+		personality,
+		name,
+		comments,
+		form_data,
+	);
 }
 
-export function listenForUpdates() {
+export function getPatcherState() {
+	return callService<[], PatcherState>("patcher", "get_patcher_state");
+}
 
+export async function listenForUpdates(cb: (state: PatcherState) => void): Promise<() => Promise<void>> {
+	const patchUpdates = listen("patcher.patch_updated", { type: "None" }, () => getPatcherState().then(cb));
+	const libraryUpdates = listen("patcher.new_fixture", { type: "None" }, () => getPatcherState().then(cb));
+
+	const stopPatchUpdates = await patchUpdates;
+	const stopLibraryUpdates = await libraryUpdates;
+
+	return async () => {
+		await stopPatchUpdates();
+		await stopLibraryUpdates();
+	};
 }
 
 // Examples
