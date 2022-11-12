@@ -4,12 +4,10 @@ import "@/assets/style.scss";
 import App from "./App.vue";
 import "normalize.css";
 
+import { unwrap } from "./scripts/helpers";
 import * as rpc from "./scripts/api/ipc";
 import * as mixer from "./scripts/api/mixer";
 import * as patcher from "./scripts/api/patcher";
-import { BlenderValue } from "./scripts/api/types/mixer";
-import { createUniverse, linkUniverse } from "./scripts/api/outputDrivers/dmx";
-import { DMXFixtureInstance } from "./scripts/api/outputDrivers/dmx/types";
 import { registerGlobals } from "@/globalComponents";
 import router from "./router";
 import { createPinia } from "pinia";
@@ -24,7 +22,7 @@ app.mount("#app");
 (window as any).mixer = mixer;
 (window as any).patcher = patcher;
 
-function blenderValue(value: number): BlenderValue {
+function blenderValue(value: number): rpc.BlenderValue {
 	return {
 		type: "Static",
 		value,
@@ -33,22 +31,23 @@ function blenderValue(value: number): BlenderValue {
 
 (window as any).patchtest = async function () {
 	console.log("Creating universe");
-	let universeId = await createUniverse();
+	let universeId = await rpc.output_dmx.create_universe();
 	console.log("Linking universe to sACN ID 1");
-	await linkUniverse(universeId, "e131", {
+	await rpc.output_dmx.link_universe(universeId, "e131", {
 		external_universe: 1,
 	});
 	console.log("Creating fixture");
-	let fixtureId = await patcher.createFixture("c205635c-037a-4e5c-8a68-59a8a86dae8f", "8-bit", "Test Fixture", null, {
+	let fixtureId = unwrap(await rpc.patcher.create_fixture("c205635c-037a-4e5c-8a68-59a8a86dae8f", "8-bit", "Test Fixture", null, {
 		universe: universeId,
 		offset: 41,
-	} as DMXFixtureInstance);
+	} as rpc.DMXFixtureInstance));
 	console.log(fixtureId);
+	return fixtureId;
 };
 
 (window as any).fulltest = async function (fixtureId: string, red: number, green: number, blue: number) {
 	console.log("Creating submaster");
-	let submasterId = await mixer.createLayer();
+	let submasterId = await rpc.mixer.create_layer();
 	console.log("Populating submaster");
 	let newContents = {
 		[fixtureId]: {
@@ -59,25 +58,25 @@ function blenderValue(value: number): BlenderValue {
 		}
 	};
 	console.log(newContents);
-	await mixer.setLayerContents(submasterId, newContents);
+	await rpc.mixer.set_layer_contents(submasterId, newContents);
 	console.log(`Setting submaster opacity (${submasterId})`);
-	await mixer.setLayerOpacity(submasterId, Math.floor(Math.random() * 65535));
+	await rpc.mixer.set_layer_opacity(submasterId, Math.floor(Math.random() * 65535), true);
 	console.log("Finished test");
 };
 
 export async function fullTestInvoked() {
 	await patcher.importFixtureTest();
 
-	let universeId = await createUniverse();
-	await linkUniverse(universeId, "e131", {
+	let universeId = await rpc.output_dmx.create_universe();
+	await rpc.output_dmx.link_universe(universeId, "e131", {
 		external_universe: 1,
 	});
-	let fixtureId = await patcher.createFixture("c205635c-037a-4e5c-8a68-59a8a86dae8f", "8-bit", "Test Fixture", null, {
+	let fixtureId = unwrap(await rpc.patcher.create_fixture("c205635c-037a-4e5c-8a68-59a8a86dae8f", "8-bit", "Test Fixture", null, {
 		universe: universeId,
 		offset: 40,
-	} as DMXFixtureInstance);
+	} as rpc.DMXFixtureInstance));
 
-	let submasterId = await mixer.createLayer();
+	let submasterId = await rpc.mixer.create_layer();
 	let newContents = {
 		[fixtureId]: {
 			red: blenderValue(255),
@@ -86,6 +85,6 @@ export async function fullTestInvoked() {
 			white: blenderValue(0),
 		}
 	};
-	await mixer.setLayerContents(submasterId, newContents);
-	await mixer.setLayerOpacity(submasterId, Math.floor(Math.random() * 65535));
+	await rpc.mixer.set_layer_contents(submasterId, newContents);
+	await rpc.mixer.set_layer_opacity(submasterId, Math.floor(Math.random() * 65535), true);
 }

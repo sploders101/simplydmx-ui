@@ -14,6 +14,7 @@ export default defineConfig({
 	resolve: {
 		alias: {
 			"@": path.resolve(__dirname, "./src"),
+			"rpc__internal": path.resolve(__dirname, "./src/scripts/api/ipc/ipc_tauri"),
 		},
 	},
 	build: {

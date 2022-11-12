@@ -1,38 +1,17 @@
-import { callService, listen } from "../ipc";
 import {
+	listen,
+	patcher,
+} from "../ipc";
+import type {
 	Channel,
 	ChannelSize,
-	FixtureBundle,
-	PatcherState,
-	Uuid,
-} from "./types/fixtureTypes";
-export * from "./types/fixtureTypes";
+	SharablePatcherState,
+} from "../ipc";
 
-const assert = <T>(v:T)=>v;
 
-export function importFixture(fixtureBundle: FixtureBundle): Promise<void> {
-	return callService("patcher", "import_fixture", fixtureBundle);
-}
-
-export function createFixture<DriverData>(fixture_type: Uuid, personality: string, name: string | null, comments: string | null, form_data: DriverData) {
-	return callService<[Uuid, string, string | null, string | null, DriverData], Uuid>(
-		"patcher",
-		"create_fixture",
-		fixture_type,
-		personality,
-		name,
-		comments,
-		form_data,
-	);
-}
-
-export function getPatcherState() {
-	return callService<[], PatcherState>("patcher", "get_patcher_state");
-}
-
-export async function listenForUpdates(cb: (state: PatcherState) => void): Promise<() => Promise<void>> {
-	const patchUpdates = listen("patcher.patch_updated", { type: "None" }, () => getPatcherState().then(cb));
-	const libraryUpdates = listen("patcher.new_fixture", { type: "None" }, () => getPatcherState().then(cb));
+export async function listenForUpdates(cb: (state: SharablePatcherState) => void): Promise<() => Promise<void>> {
+	const patchUpdates = listen("patcher.patch_updated", { type: "None" }, () => patcher.get_patcher_state().then(cb));
+	const libraryUpdates = listen("patcher.new_fixture", { type: "None" }, () => patcher.get_patcher_state().then(cb));
 
 	const stopPatchUpdates = await patchUpdates;
 	const stopLibraryUpdates = await libraryUpdates;
@@ -60,13 +39,17 @@ const colorChannel = (size: ChannelSize): Channel => ({
 });
 
 export async function importFixtureTest() {
-	const importResponse = await importFixture({
+	const importResponse = await patcher.import_fixture({
 		fixture_info: {
 			id: "c205635c-037a-4e5c-8a68-59a8a86dae8f",
 			name: "Generic RGBW Fixture",
 			short_name: "RGBW",
+			manufacturer: "Generic",
 			family: "Generic",
-			metadata: {},
+			metadata: {
+				manual_link: null,
+				manufacturer: null,
+			},
 			channels: {
 				red: colorChannel("U8"),
 				green: colorChannel("U8"),
@@ -90,10 +73,4 @@ export async function importFixtureTest() {
 	});
 
 	console.log(importResponse);
-}
-
-export async function createFixtureTest() {
-	// const createResponse = await createFixture("c205635c-037a-4e5c-8a68-59a8a86dae8f", "8-bit", "Test Fixture", null, {});
-	const createResponse = await createFixture("c205635c-037a-4e5c-8a68-59a8a86dae8f", "8-bit", "Test Fixture", null, {});
-	console.log(createResponse);
 }
