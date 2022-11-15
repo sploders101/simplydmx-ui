@@ -42,4 +42,13 @@ $accent-color: rgb(0, 154, 3);
 	--button-hover-bg: color.change(#{$accent-color}, $alpha: 0.125);
 	--button-hover-border-color: var(--accent-color);
 	--button-shadow-depressed: inset 0 0 10px 5px rgba(0, 0, 0, 0.25);
+	--button-subtle-bg: transparent;
+	--button-subtle-bg-hovered: rgba(100, 100, 100, 0.25);
+
+	// Dialog
+	--dialog-modal-background: rgba(0, 0, 0, 0.25);
+	--dialog-modal-filter: blur(3px);
+	--dialog-background: var(--background-color);
+	--dialog-border-color: var(--unfocused-border-color);
+	--dialog-box-shadow: 0 0 1rem 0 black;
 }
