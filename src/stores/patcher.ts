@@ -1,11 +1,29 @@
 import { defineStore } from "pinia";
-import { ref } from "vue";
-import { getPatcherState, listenForUpdates } from "@/scripts/api/patcher";
-import type { PatcherState } from "@/scripts/api/patcher";
+import { ref, onMounted, onUnmounted } from "vue";
+import * as ipc from "@/scripts/api/ipc";
+import { listenForUpdates } from "@/scripts/api/patcher";
 
-export const usePatcherStore = defineStore("patcher", () => {
-	const patcherData = ref<null | PatcherState>(null);
+const patcherData = ref<null | ipc.SharablePatcherState>(null);
+let unlisten: (Promise<() => Promise<void>>) | null = null;
+let listeners = 0;
 
-	getPatcherState().then((state) => patcherData.value = state);
-	listenForUpdates((state) => patcherData.value = state);
-});
+export function usePatcherState() {
+	onMounted(() => {
+		if (listeners === 0) {
+			ipc.patcher.get_patcher_state().then((state) => patcherData.value = state);
+			unlisten = listenForUpdates((state) => patcherData.value = state);
+		}
+		listeners += 1;
+	});
+	onUnmounted(() => {
+		listeners -= 1;
+		if (listeners === 0) {
+			let unlistener = unlisten;
+			unlisten = null;
+			patcherData.value = null;
+			unlistener?.then((unlistener) => unlistener());
+		}
+	});
+
+	return patcherData;
+}

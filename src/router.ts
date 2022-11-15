@@ -1,5 +1,6 @@
 import { createRouter, createWebHashHistory } from "vue-router";
 import Home from "./views/Home.vue";
+import Patcher from "./views/patcher.vue";
 
 const router = createRouter({
 	history: createWebHashHistory(),
@@ -13,8 +14,8 @@ const router = createRouter({
 			},
 		},
 		{
-			path: "/test",
-			component: Home,
+			path: "/patch",
+			component: Patcher,
 			name: "DMX Patching",
 			meta: {
 				icon: "xlr5",
