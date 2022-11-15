@@ -250,6 +250,11 @@ export type Uuid = string;
 export type Value = any;
 
 
+export const core = {
+	log(msg: string): Promise<void> { return callService("core", "log", [msg]) },
+	log_error(msg: string): Promise<void> { return callService("core", "log_error", [msg]) },
+};
+
 export const mixer = {
 	commit_blind(): Promise<void> { return callService("mixer", "commit_blind", []) },
 	create_layer(): Promise<Uuid> { return callService("mixer", "create_layer", []) },
@@ -271,18 +276,13 @@ export const output_dmx = {
 	unlink_universe(universe_id: Uuid): Promise<void> { return callService("output_dmx", "unlink_universe", [universe_id]) },
 };
 
-export const core = {
-	log(msg: string): Promise<void> { return callService("core", "log", [msg]) },
-	log_error(msg: string): Promise<void> { return callService("core", "log_error", [msg]) },
-};
-
-export const saver = {
-	save(): Promise<{ Ok: number[] } | { Err: SaveError }> { return callService("saver", "save", []) },
-};
-
 export const patcher = {
 	create_fixture(fixture_type: Uuid, personality: string, name: string | null, comments: string | null, form_data: SerializedData): Promise<{ Ok: Uuid } | { Err: CreateFixtureError }> { return callService("patcher", "create_fixture", [fixture_type, personality, name, comments, form_data]) },
 	get_patcher_state(): Promise<SharablePatcherState> { return callService("patcher", "get_patcher_state", []) },
 	import_fixture(fixture_bundle: FixtureBundle): Promise<{ Ok: null } | { Err: ImportFixtureError }> { return callService("patcher", "import_fixture", [fixture_bundle]) },
+};
+
+export const saver = {
+	save(): Promise<{ Ok: number[] } | { Err: SaveError }> { return callService("saver", "save", []) },
 };
 
