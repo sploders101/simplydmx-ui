@@ -20,9 +20,9 @@
 					<div class="sdmx-dialog__header" v-if="$slots.header || props.showClose">
 						<slot name=header />
 						<div class="spacer"/>
-						<div class="close-btn" @click.stop="emit('close-clicked')" v-if="props.showClose">
+						<Button subtle icon class="close-btn" @click="emit('close-clicked')" v-if="props.showClose">
 							<Icon i="close" class="close-btn" />
-						</div>
+						</Button>
 					</div>
 					<div class="sdmx-dialog__content" v-if="$slots.default">
 						<slot />
@@ -84,21 +84,12 @@
 			& > .close-btn {
 				height: 30px;
 				width: 30px;
-				margin-left: 3rem;
-				border-radius: 50%;
-
-				display: flex;
-				flex-flow: row nowrap;
-				align-items: center;
-				justify-content: center;
-
-				&:hover {
-					background-color: var(--subtle-btn-hover-color);
-				}
+				margin: 0;
+				margin-left: 1rem;
 
 				& > svg {
-					height: 24px;
-					width: 24px;
+					height: 30px;
+					width: 30px;
 				}
 			}
 		}

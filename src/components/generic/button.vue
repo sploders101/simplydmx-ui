@@ -4,14 +4,15 @@
 	}>();
 	const props = defineProps<{
 		subtle?: boolean,
+		icon?: boolean,
 	}>();
 </script>
 
 <template>
 	<button
 		class="sdmx-button"
-		:class="{ subtle }"
-		@click="emit('click')"
+		:class="{ subtle: props.subtle, icon: props.icon }"
+		@click.stop="emit('click')"
 		><slot/></button>
 </template>
 
@@ -45,6 +46,16 @@
 			&:active {
 				box-shadow: var(--button-shadow-depressed);
 			}
+		}
+
+		&.icon {
+			padding: 0.25rem;
+			border-radius: 50%;
+
+			display: flex;
+			flex-flow: row nowrap;
+			align-items: center;
+			justify-content: center;
 		}
 
 		&:hover {

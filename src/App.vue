@@ -74,5 +74,9 @@
 				}
 			}
 		}
+
+		& > .content {
+			overflow: auto;
+		}
 	}
 </style>
