@@ -51,4 +51,9 @@ $accent-color: rgb(0, 154, 3);
 	--dialog-background: var(--background-color);
 	--dialog-border-color: var(--unfocused-border-color);
 	--dialog-box-shadow: 0 0 1rem 0 black;
+
+	// Tabs
+	--focused-tab-shadow: 0 0 5px 2px #{darken($accent-color, 10%)};
+	--focused-tab-color: var(--focused-border-color);
+	--tab-bg-hovered: rgba(100, 100, 100, 0.125);
 }
