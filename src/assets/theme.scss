@@ -39,7 +39,7 @@ $accent-color: rgb(0, 154, 3);
 	--focused-shadow: 0 0 1rem 0 #{darken($accent-color, 10%)}, inset 0 0 5px 5px rgba(0, 0, 0, 0.25);
 
 	// Button
-	--button-hover-bg: color.change(#{$accent-color}, $alpha: 0.125);
+	--button-hover-bg: #{change-color($accent-color, $alpha: 0.125)};
 	--button-hover-border-color: var(--accent-color);
 	--button-shadow-depressed: inset 0 0 10px 5px rgba(0, 0, 0, 0.25);
 	--button-subtle-bg: transparent;
@@ -56,4 +56,9 @@ $accent-color: rgb(0, 154, 3);
 	--focused-tab-shadow: 0 0 5px 2px #{darken($accent-color, 10%)};
 	--focused-tab-color: var(--focused-border-color);
 	--tab-bg-hovered: rgba(100, 100, 100, 0.125);
+
+	// LargeSelect
+	--largeselect-background: #{lighten($background-color, 5%)};
+	--largeselect-focused-background: #{change-color($accent-color, $alpha: 0.25)};
+	--largeselect-hover-background: #{lighten($background-color, 10%)}
 }

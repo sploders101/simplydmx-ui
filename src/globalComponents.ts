@@ -7,19 +7,9 @@ import Button from "@/components/generic/button.vue";
 import Dialog from "@/components/generic/dialog.vue";
 import Tabs from "@/components/generic/tabs.vue";
 import Tabitem from "@/components/generic/tabitem.vue";
+import LargeSelect from "@/components/generic/largeselect.vue";
 
-export interface CustomGlobalComponents {
-	Icon: typeof Icon,
-	Tooltip: typeof Tooltip,
-	Textbox: typeof Textbox,
-	Dropdown: typeof Dropdown,
-	Button: typeof Button,
-	Dialog: typeof Dialog,
-	Tabs: typeof Tabs,
-	Tabitem: typeof Tabitem,
-}
-
-const globalComponents: CustomGlobalComponents = {
+const globalComponents = {
 	Icon,
 	Tooltip,
 	Textbox,
@@ -28,7 +18,9 @@ const globalComponents: CustomGlobalComponents = {
 	Dialog,
 	Tabs,
 	Tabitem,
+	LargeSelect,
 };
+export type CustomGlobalComponents = typeof globalComponents;
 
 export function registerGlobals(app: App<Element>) {
 	Object.entries(globalComponents).forEach(([name, component]) => {

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-	import { ref, onMounted, onUnmounted } from "vue";
+	import { ref } from "vue";
 
 	const test = ref("Testing");
 	const test2 = ref("test1");
@@ -27,6 +27,7 @@
 	}
 
 	const dialogVisible = ref(false);
+	const selectValue = ref(1);
 </script>
 
 <template>
@@ -45,6 +46,9 @@
 			</p>
 			<p>{{ test }}</p>
 			<p>{{ test2 }}</p>
+		</Tabitem>
+		<Tabitem tab="test2">
+			<LargeSelect :options="[1, 2, 3, 4, 5].map((i) => ({ label: 'Test ' + i, value: i}))" v-model="selectValue" />
 		</Tabitem>
 	</Tabs>
 
