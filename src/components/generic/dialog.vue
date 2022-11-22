@@ -1,24 +1,84 @@
+<script lang="ts">
+	import { reactive } from "vue";
+	const modalStack = reactive<Symbol[]>([]);
+</script>
+
 <script setup lang="ts">
-	const props = defineProps<{
-		visible: boolean,
-		showClose?: boolean,
-	}>();
+	import { onMounted, onBeforeUnmount, watch } from "vue";
+
+	const props = defineProps({
+		/// Whether or not the dialog is visible
+		visible: { type: Boolean, required: true },
+
+		/// Whether or not to show the close button on the top right of the dialog. Defaults to `true`
+		showClose: { type: Boolean, default: true },
+
+		/// Disables auto-closing the dialog for modal clicks and escape presses.
+		/// This still allows closing via the close button. If this is not desired, use `:visible`
+		/// instead of `v-model:visible` and bind to individual events.
+		persistent: { type: Boolean, default: false },
+	});
 
 	const emit = defineEmits<{
+		// Individual interactions can be listened to for fine-grained control
 		(e: "modal-clicked"): void,
 		(e: "close-clicked"): void,
+		(e: "escape-pressed"): void,
+
+		// If this behavior is not desired, use `:visible` instead of `v-model:visible` for a one-way binding.
+		(e: "update:visible", value: false): void,
 	}>();
+
+	const thisinstance = Symbol("Dialog Instance Identifier");
+	watch(() => props.visible, (value, oldValue) => {
+		if (value && !oldValue) {
+			modalStack.push(thisinstance);
+		} else if (!value && oldValue) {
+			modalStack.splice(modalStack.indexOf(thisinstance), 1);
+		}
+	});
+	onMounted(() => {
+		document.body.addEventListener("keypress", keyHandler);
+	});
+	onBeforeUnmount(() => {
+		document.body.removeEventListener("keypress", keyHandler);
+	});
+	function keyHandler(event: KeyboardEvent) {
+		if (modalStack[modalStack.length - 1] === thisinstance) {
+			if (event.key === "Escape") {
+				event.preventDefault();
+				requestClose("escape");
+			}
+		}
+	}
+
+	function requestClose(kind: "modal" | "button" | "escape") {
+		switch (kind) {
+			case "modal":
+				emit("modal-clicked");
+				if (!props.persistent) emit("update:visible", false);
+				break;
+			case "button":
+				emit("close-clicked");
+				emit("update:visible", false);
+				break;
+			case "escape":
+				emit("escape-pressed");
+				if (!props.persistent) emit("update:visible", false);
+				break;
+		}
+	}
 </script>
 
 <template>
 	<Teleport to="body">
 		<Transition name="sdmx-dialog-fade">
-			<div v-if="props.visible" class="sdmx-dialog__modal" @click.stop="emit('modal-clicked')">
+			<div v-if="props.visible" class="sdmx-dialog__modal" @click.stop="requestClose('modal')">
 				<div class="sdmx-dialog" @click.stop>
-					<div class="sdmx-dialog__header" v-if="$slots.header || props.showClose">
+					<div class="sdmx-dialog__header" v-if="$slots.header || props.showClose !== false">
 						<slot name=header />
 						<div class="spacer"/>
-						<Button subtle icon class="close-btn" @click="emit('close-clicked')" v-if="props.showClose">
+						<Button subtle icon class="close-btn" @click="requestClose('button')" v-if="props.showClose !== false">
 							<Icon i="close" class="close-btn" />
 						</Button>
 					</div>

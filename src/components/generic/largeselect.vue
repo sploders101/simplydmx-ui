@@ -6,7 +6,8 @@
 </script>
 
 <script lang="ts" setup>
-	import { type PropType } from "vue";
+	import { randomId } from "@/scripts/random";
+	import { ref, computed, type PropType } from "vue";
 
 	const props = defineProps({
 		options: {
@@ -14,16 +15,31 @@
 			required: true,
 		},
 		modelValue: { required: true },
+		enableSearch: {
+			type: Boolean,
+			required: false,
+		},
 	});
 
 	const emit = defineEmits<{
 		(e: "update:modelValue", value: any): void
 	}>();
+
+	const thisInstanceId = randomId();
+	const search = ref("");
+	const filteredOptions = computed(() => {
+		if (!props.enableSearch) return props.options;
+		return props.options.filter(({ label }) => label.toLowerCase().includes(search.value.toLowerCase()));
+	});
 </script>
 
 <template>
 	<div class="sdmx-largeselect">
-		<div v-for="option in props.options" class="largeselect-option" :class="{ active: option.value === props.modelValue }" @click="emit('update:modelValue', option.value)">
+		<template v-if="props.enableSearch">
+			<label :for="thisInstanceId + '-search'">Search:</label>
+			<Textbox v-model="search" :textboxId="thisInstanceId + '-search'" />
+		</template>
+		<div v-for="option in filteredOptions" class="largeselect-option" :class="{ active: option.value === props.modelValue }" @click="emit('update:modelValue', option.value)">
 			<slot name="option" :option="option">
 				{{ option.label }}
 			</slot>
@@ -38,6 +54,10 @@
 		justify-content: flex-start;
 		align-items: stretch;
 		background: var(--largeselect-background);
+
+		& > label {
+			font-size: 0.875rem;
+		}
 
 		& > .largeselect-option {
 			height: 3rem;

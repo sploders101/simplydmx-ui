@@ -5,6 +5,7 @@
 	const props = defineProps<{
 		modelValue: string,
 		iconRight?: IconPath,
+		textboxId?: string,
 	}>();
 	const emit = defineEmits<{
 		(event: "update:modelValue", value: string): void,
@@ -22,6 +23,7 @@
 		>
 		<input
 			type="text"
+			:id="props.textboxId"
 			ref="textbox"
 			autocomplete="off"
 			spellcheck="false"
@@ -30,6 +32,7 @@
 			@input="emit('update:modelValue', ($event.target as HTMLInputElement).value)"
 			@focus="emit('focus')"
 			@blur="emit('blur')"
+			@keypress.esc.prevent="textbox!.blur()"
 			>
 		<Icon v-if="props.iconRight" class="trailing-icon" :i="props.iconRight" />
 	</div>
@@ -52,6 +55,10 @@
 		padding: 0.5rem;
 
 		cursor: text;
+
+		label + & {
+			margin-top: 0;
+		}
 
 		&:has(input:focus) {
 			border: 1px solid var(--focused-border-color);

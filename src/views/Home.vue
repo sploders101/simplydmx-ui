@@ -48,14 +48,14 @@
 			<p>{{ test2 }}</p>
 		</Tabitem>
 		<Tabitem tab="test2">
-			<LargeSelect :options="[1, 2, 3, 4, 5].map((i) => ({ label: 'Test ' + i, value: i}))" v-model="selectValue" />
+			<LargeSelect :options="[1, 2, 3, 4, 5].map((i) => ({ label: 'Test ' + i, value: i}))" v-model="selectValue" enableSearch />
 		</Tabitem>
 	</Tabs>
 
 	<Textbox v-model="test" />
 	<Dropdown v-model="test2" :options="options" />
 	<Button @click="testButton()">Hello</button>
-	<Dialog :visible="dialogVisible" show-close @close-clicked="dialogVisible = false" @modal-clicked="dialogVisible = false">
+	<Dialog v-model:visible="dialogVisible">
 		<template #header>
 			Test Header
 		</template>
