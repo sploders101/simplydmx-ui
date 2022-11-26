@@ -35,10 +35,10 @@
 
 <template>
 	<div class="sdmx-largeselect">
-		<template v-if="props.enableSearch">
-			<label :for="thisInstanceId + '-search'">Search:</label>
-			<Textbox v-model="search" :textboxId="thisInstanceId + '-search'" />
-		</template>
+		<div class="largeselect-header spaced">
+			<Textbox v-if="props.enableSearch" v-model="search" hint="Search" class="largeselect-search" />
+			<slot name="header-right" />
+		</div>
 		<div v-for="option in filteredOptions" class="largeselect-option" :class="{ active: option.value === props.modelValue }" @click="emit('update:modelValue', option.value)">
 			<slot name="option" :option="option">
 				{{ option.label }}
@@ -54,9 +54,17 @@
 		justify-content: flex-start;
 		align-items: stretch;
 		background: var(--largeselect-background);
+		
+		& > .largeselect-header {
+			display: flex;
+			flex-flow: row nowrap;
+			justify-content: center;
+			align-items: center;
+			gap: 0.75rem;
 
-		& > label {
-			font-size: 0.875rem;
+			& > .largeselect-search {
+				flex-grow: 1;
+			}
 		}
 
 		& > .largeselect-option {

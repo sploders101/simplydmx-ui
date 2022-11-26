@@ -79,7 +79,7 @@
 						<slot name=header />
 						<div class="spacer"/>
 						<Button subtle icon class="close-btn" @click="requestClose('button')" v-if="props.showClose !== false">
-							<Icon i="close" class="close-btn" />
+							<Icon i="close" />
 						</Button>
 					</div>
 					<div class="sdmx-dialog__content" v-if="$slots.default">

@@ -6,6 +6,7 @@
 		mdiChevronUp,
 		mdiSpotlightBeam,
 		mdiClose,
+		mdiPlus,
 	} from "@mdi/js";
 
 	const paths = {
@@ -16,6 +17,7 @@
 		chevronUp: mdiChevronUp,
 		stageLight: mdiSpotlightBeam,
 		close: mdiClose,
+		plus: mdiPlus,
 	} as const;
 
 	export type IconPath = keyof typeof paths;

@@ -19,7 +19,6 @@
 <style lang="scss">
 	.sdmx-button {
 		display: block;
-		margin: 0.75rem;
 		padding: 0.5rem;
 		outline: none;
 		background: var(--input-background);
@@ -56,6 +55,14 @@
 			flex-flow: row nowrap;
 			align-items: center;
 			justify-content: center;
+			
+			height: 30px;
+			width: 30px;
+			
+			& > svg {
+				width: 100%;
+				height: 100%;
+			}
 		}
 
 		&:hover {

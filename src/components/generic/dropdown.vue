@@ -22,6 +22,7 @@
 	const props = defineProps({
 		modelValue: { required: true, type: undefined as unknown as PropType<Option["name"]> },
 		options: { required: true, type: Array as PropType<Option[]> },
+		class: { required: false, type: Object as PropType<string | string[] | Record<string, boolean>> },
 	})
 
 	// const props = defineProps<{
@@ -115,7 +116,23 @@
 			await new Promise((res) => setTimeout(res, 50));
 			bdFilterFix.value = undefined;
 		}
-	})
+	});
+
+	const classes = computed(() => {
+		if (typeof props.class === "string") {
+			const obj: Record<string, boolean> = {};
+			props.class.split(" ").forEach((value) => obj[value] = true);
+			return obj;
+		} else if (Array.isArray(props.class)) {
+			const obj: Record<string, boolean> = {};
+			props.class.forEach((value) => obj[value] = true);
+			return obj;
+		} else if (typeof props.class == "object" && props.class !== null) {
+			return props.class;
+		} else {
+			return {};
+		}
+	});
 </script>
 
 <template>
@@ -123,7 +140,7 @@
 		ref="textbox"
 		v-model="searchValue"
 		icon-right="chevronDown"
-		:class="{ 'dropdown-open': dropdownOpen }"
+		:class="{ 'dropdown-open': dropdownOpen, ...classes }"
 		@focus="dropdownOpen = true; useSearchValue = false"
 		@input="dropdownOpen = true; useSearchValue = true"
 		@blur="handleBlur()"

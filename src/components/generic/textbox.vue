@@ -6,6 +6,7 @@
 		modelValue: string,
 		iconRight?: IconPath,
 		textboxId?: string,
+		hint?: string,
 	}>();
 	const emit = defineEmits<{
 		(event: "update:modelValue", value: string): void,
@@ -29,6 +30,7 @@
 			spellcheck="false"
 			autocapitalize="off"
 			:value="props.modelValue"
+			:placeholder="props.hint"
 			@input="emit('update:modelValue', ($event.target as HTMLInputElement).value)"
 			@focus="emit('focus')"
 			@blur="emit('blur')"
@@ -43,7 +45,6 @@
 		display: flex;
 		flex-flow: row nowrap;
 		align-items: center;
-		margin: 0.75rem;
 
 		outline: none;
 		border: 1px solid var(--unfocused-border-color);

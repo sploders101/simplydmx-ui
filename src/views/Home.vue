@@ -48,24 +48,30 @@
 			<p>{{ test2 }}</p>
 		</Tabitem>
 		<Tabitem tab="test2">
-			<LargeSelect :options="[1, 2, 3, 4, 5].map((i) => ({ label: 'Test ' + i, value: i}))" v-model="selectValue" enableSearch />
+			<LargeSelect :options="[1, 2, 3, 4, 5].map((i) => ({ label: 'Test ' + i, value: i}))" v-model="selectValue" enableSearch>
+				<template #header-right>
+					<Tooltip text="Add Fixture">
+						<Button icon subtle><Icon i="plus"/></Button>
+					</Tooltip>
+				</template>
+			</LargeSelect>
 		</Tabitem>
 	</Tabs>
 
-	<Textbox v-model="test" />
-	<Dropdown v-model="test2" :options="options" />
-	<Button @click="testButton()">Hello</button>
+	<Textbox v-model="test" class="spaced" />
+	<Dropdown v-model="test2" :options="options" class="spaced" />
+	<Button @click="testButton()" class="spaced">Hello</button>
 	<Dialog v-model:visible="dialogVisible">
 		<template #header>
 			Test Header
 		</template>
 		Test Content
 		<template #footer>
-			<Button @click="dialogVisible = false" subtle>
+			<Button @click="dialogVisible = false" subtle class="spaced">
 				Cancel
 			</Button>
 			<div class="spacer"/>
-			<Button @click="dialogVisible = false">
+			<Button @click="dialogVisible = false" class="spaced">
 				Ok
 			</Button>
 		</template>
