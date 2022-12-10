@@ -7,7 +7,6 @@ import {
 
 
 export function sendRPC(message: SDMXCommand) {
-	console.log(message);
 	return invoke("sdmx", { message: JSON.stringify(message) });
 }
 
