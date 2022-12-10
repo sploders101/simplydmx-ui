@@ -1,6 +1,6 @@
 import { createRouter, createWebHashHistory } from "vue-router";
 import Home from "./views/Home.vue";
-import Patcher from "./views/patcher.vue";
+import Patcher from "./views/patcher/patcher.vue";
 
 const router = createRouter({
 	history: createWebHashHistory(),
