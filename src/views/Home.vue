@@ -6,6 +6,7 @@
 	import * as patcher from "@/scripts/api/patcher";
 	import { SelectEvent } from "@/components/generic/largeselect.vue";
 	import { usePatcherState } from "@/stores/patcher";
+	import { Channel, ChannelSize } from "@/scripts/api/ipc";
 
 	const patcherState = usePatcherState();
 
@@ -54,44 +55,55 @@
 			value,
 		};
 	}
-	
-	(window as any).patchtest = async function () {
-		console.log("Creating universe");
-		let universeId = await rpc.output_dmx.create_universe();
-		console.log("Linking universe to sACN ID 1");
-		await rpc.output_dmx.link_universe(universeId, "e131", {
-			external_universe: 1,
-		});
-		console.log("Creating fixture");
-		let fixtureId = unwrap(await rpc.patcher.create_fixture("c205635c-037a-4e5c-8a68-59a8a86dae8f", "8-bit", "Test Fixture", null, {
-			universe: universeId,
-			offset: 41,
-		} as rpc.DMXFixtureInstance));
-		console.log(fixtureId);
-		return fixtureId;
-	};
 
-	(window as any).fulltest = async function (fixtureId: string, red: number, green: number, blue: number) {
-		console.log("Creating submaster");
-		let submasterId = await rpc.mixer.create_layer();
-		console.log("Populating submaster");
-		let newContents = {
-			[fixtureId]: {
-				red: blenderValue(red),
-				green: blenderValue(green),
-				blue: blenderValue(blue),
-				white: blenderValue(0),
-			}
-		};
-		console.log(newContents);
-		await rpc.mixer.set_layer_contents(submasterId, newContents);
-		console.log(`Setting submaster opacity (${submasterId})`);
-		await rpc.mixer.set_layer_opacity(submasterId, Math.floor(Math.random() * 65535), true);
-		console.log("Finished test");
-	};
+	// Examples
+	const colorChannel = (size: ChannelSize): Channel => ({
+		size: size,
+		ch_type: {
+			type: "Linear",
+			priority: "LTP",
+		},
+	});
+
+	async function importFixtureTest() {
+		const importResponse = await rpc.patcher.import_fixture({
+			fixture_info: {
+				id: "c205635c-037a-4e5c-8a68-59a8a86dae8f",
+				name: "Generic RGBW Fixture",
+				short_name: "RGBW",
+				manufacturer: "Generic",
+				family: "Generic",
+				metadata: {
+					manual_link: null,
+					manufacturer: null,
+				},
+				channels: {
+					red: colorChannel("U8"),
+					green: colorChannel("U8"),
+					blue: colorChannel("U8"),
+					white: colorChannel("U8"),
+				},
+				personalities: {
+					"8-bit": {
+						available_channels: ["red", "green", "blue", "white"],
+					},
+				},
+				output_driver: "DMX",
+			},
+			output_info: {
+				personalities: {
+					"8-bit": {
+						dmx_channel_order: ["red", "green", "blue", "white"],
+					},
+				},
+			},
+		});
+
+		console.log(importResponse);
+	}
 
 	async function fullTestInvoked() {
-		await patcher.importFixtureTest();
+		await importFixtureTest();
 
 		let universeId = await rpc.output_dmx.create_universe();
 		await rpc.output_dmx.link_universe(universeId, "e131", {
