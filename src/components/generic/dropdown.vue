@@ -22,7 +22,7 @@
 	const props = defineProps({
 		modelValue: { required: true, type: undefined as unknown as PropType<Option["name"]> },
 		options: { required: true, type: Array as PropType<Option[]> },
-		class: { required: false, type: Object as PropType<string | string[] | Record<string, boolean>> },
+		class: { required: false, type: undefined as unknown as PropType<string | string[] | Record<string, boolean>> },
 	})
 
 	// const props = defineProps<{

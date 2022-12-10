@@ -17,6 +17,9 @@
 		/// This still allows closing via the close button. If this is not desired, use `:visible`
 		/// instead of `v-model:visible` and bind to individual events.
 		persistent: { type: Boolean, default: false },
+
+		/// The class to be passed through to the dialog component
+		dialogClass: { type: String, required: false },
 	});
 
 	const emit = defineEmits<{
@@ -74,7 +77,7 @@
 	<Teleport to="body">
 		<Transition name="sdmx-dialog-fade">
 			<div v-if="props.visible" class="sdmx-dialog__modal" @click.stop="requestClose('modal')">
-				<div class="sdmx-dialog" @click.stop>
+				<div :class="'sdmx-dialog' + (props.dialogClass ? ' ' + props.dialogClass : '')" @click.stop>
 					<div class="sdmx-dialog__header" v-if="$slots.header || props.showClose !== false">
 						<slot name=header />
 						<div class="spacer"/>
@@ -124,6 +127,9 @@
 		border: 1px solid var(--dialog-border-color);
 		box-shadow: var(--dialog-box-shadow);
 		border-radius: 1rem;
+		max-width: 50vw;
+		min-width: 30rem;
+
 
 		& > .sdmx-dialog__header {
 			padding: 1.25rem;

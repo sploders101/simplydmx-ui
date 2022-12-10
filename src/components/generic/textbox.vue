@@ -20,7 +20,7 @@
 <template>
 	<div
 		class="sdmx-textbox"
-		@mousedown.prevent="textbox?.focus()"
+		@click.stop="textbox?.focus()"
 		>
 		<input
 			type="text"

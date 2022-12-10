@@ -51,6 +51,9 @@
 
 <style lang="scss">
 	.sdmx-tabs {
+		display: flex;
+		flex-flow: column nowrap;
+
 		& > .tabs-container {
 			// border: 1px solid red;
 			display: flex;
@@ -91,6 +94,9 @@
 
 				transition: background-color 100ms;
 			}
+		}
+		& > .tab-contents {
+			flex-grow: 1;
 		}
 	}
 </style>

@@ -3,6 +3,10 @@
 		label: string,
 		value: any,
 	}
+	export interface SelectEvent {
+		value: any,
+		event: MouseEvent,
+	}
 </script>
 
 <script lang="ts" setup>
@@ -14,7 +18,7 @@
 			type: Array as PropType<SelectOption[]>,
 			required: true,
 		},
-		modelValue: { required: true },
+		modelValue: {},
 		enableSearch: {
 			type: Boolean,
 			required: false,
@@ -22,15 +26,20 @@
 	});
 
 	const emit = defineEmits<{
-		(e: "update:modelValue", value: any): void
+		(e: "update:modelValue", value: any): void,
+		(e: "select", event: SelectEvent): void,
 	}>();
 
-	const thisInstanceId = randomId();
 	const search = ref("");
 	const filteredOptions = computed(() => {
 		if (!props.enableSearch) return props.options;
 		return props.options.filter(({ label }) => label.toLowerCase().includes(search.value.toLowerCase()));
 	});
+	
+	function dispatchSelect(value: any, event: MouseEvent) {
+		emit("update:modelValue", value);
+		emit("select", { value, event });
+	}
 </script>
 
 <template>
@@ -39,7 +48,7 @@
 			<Textbox v-if="props.enableSearch" v-model="search" hint="Search" class="largeselect-search" />
 			<slot name="header-right" />
 		</div>
-		<div v-for="option in filteredOptions" class="largeselect-option" :class="{ active: option.value === props.modelValue }" @click="emit('update:modelValue', option.value)">
+		<div v-for="option in filteredOptions" class="largeselect-option" :class="{ active: option.value === props.modelValue }" @click="dispatchSelect(option.value, $event)">
 			<slot name="option" :option="option">
 				{{ option.label }}
 			</slot>
@@ -70,6 +79,8 @@
 		& > .largeselect-option {
 			height: 3rem;
 			cursor: pointer;
+			user-select: none;
+			-webkit-user-select: none;
 
 			&.active {
 				background: var(--largeselect-focused-background);
