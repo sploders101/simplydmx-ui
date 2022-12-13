@@ -1,8 +1,6 @@
 import { callService } from "./agnostic_abstractions";
 
 
-// 52 types registered
-
 // AbstractLayerLight
 export type AbstractLayerLight = Record<string, BlenderValue>;
 
@@ -127,7 +125,38 @@ export interface FixtureMeta {
 }
 
 // FormDescriptor
-export type FormDescriptor = [];
+export type FormDescriptor = FormItem[];
+
+// FormDropdown
+export interface FormDropdown {
+    label: string;
+    id: string;
+    item_source: FormItemOptionSource;
+}
+
+// FormItem
+export type FormItem = { Textbox: FormTextbox } | { Number: FormNumber } | { Dropdown: FormDropdown } | { Section: FormSection } | { VerticalStack: FormItem[] } | { HorizontalStack: FormItem[] };
+
+// FormItemOptionSource
+export type FormItemOptionSource = { Static: { values: DropdownOptionJSON[] } } | { TypeSpec: { typespec_id: string } };
+
+// FormNumber
+export interface FormNumber {
+    label: string;
+    id: string;
+}
+
+// FormSection
+export interface FormSection {
+    label: string;
+    form_items: FormItem[];
+}
+
+// FormTextbox
+export interface FormTextbox {
+    label: string;
+    id: string;
+}
 
 // ImportError
 export type ImportError = { type: "InvalidData" } | ({ type: "Other" } & string) | { type: "Unknown" };
@@ -139,10 +168,10 @@ export type ImportFixtureError = "UnknownController" | { ErrorFromController: Im
 export type JSONCallServiceError = { type: "ServiceNotFound" } | { type: "ArgDeserializationFailed" } | { type: "ResponseSerializationFailed" };
 
 // JSONCommand
-export type JSONCommand = { type: "CallService"; message_id: number; plugin_id: string; service_id: string; args: Value[] } | { type: "GetServices"; message_id: number } | { type: "SendEvent"; name: string; criteria: FilterCriteria | null; data: Value } | { type: "Subscribe"; name: string; criteria: FilterCriteria | null } | { type: "Unsubscribe"; name: string; criteria: FilterCriteria | null };
+export type JSONCommand = { type: "CallService"; message_id: number; plugin_id: string; service_id: string; args: Value[] } | { type: "GetServices"; message_id: number } | { type: "GetOptions"; message_id: number; provider_id: string } | { type: "SendEvent"; name: string; criteria: FilterCriteria | null; data: Value } | { type: "Subscribe"; name: string; criteria: FilterCriteria | null } | { type: "Unsubscribe"; name: string; criteria: FilterCriteria | null };
 
 // JSONResponse
-export type JSONResponse = { type: "CallServiceResponse"; message_id: number; result: Value } | { type: "ServiceList"; message_id: number; list: ServiceDescription[] } | { type: "CallServiceError"; message_id: number; error: JSONCallServiceError } | { type: "Event"; name: string; criteria: FilterCriteria; data: Value };
+export type JSONResponse = { type: "CallServiceResponse"; message_id: number; result: Value } | { type: "ServiceList"; message_id: number; list: ServiceDescription[] } | { type: "OptionsList"; message_id: number; list: { Ok: DropdownOptionJSON[] } | { Err: TypeSpecifierRetrievalError } } | { type: "CallServiceError"; message_id: number; error: JSONCallServiceError } | { type: "Event"; name: string; criteria: FilterCriteria; data: Value };
 
 // LinkUniverseError
 export type LinkUniverseError = { type: "ErrorFromController"; data: RegisterUniverseError } | { type: "UniverseNotFound" } | { type: "ControllerNotFound" };
@@ -240,6 +269,7 @@ export type SubmasterData = Record<Uuid, AbstractLayerLight>;
 // UniverseInstance
 export interface UniverseInstance {
     id: Uuid;
+    name: string;
     controller: string | null;
 }
 
@@ -270,7 +300,7 @@ export const mixer = {
 };
 
 export const output_dmx = {
-	create_universe(): Promise<Uuid> { return callService("output_dmx", "create_universe", []) },
+	create_universe(name: string): Promise<Uuid> { return callService("output_dmx", "create_universe", [name]) },
 	delete_universe(universe_id: Uuid): Promise<void> { return callService("output_dmx", "delete_universe", [universe_id]) },
 	link_universe(universe_id: Uuid, driver: string, form_data: SerializedData): Promise<{ Ok: null } | { Err: LinkUniverseError }> { return callService("output_dmx", "link_universe", [universe_id, driver, form_data]) },
 	unlink_universe(universe_id: Uuid): Promise<void> { return callService("output_dmx", "unlink_universe", [universe_id]) },

@@ -106,7 +106,7 @@
 	async function fullTestInvoked() {
 		await importFixtureTest();
 
-		let universeId = await rpc.output_dmx.create_universe();
+		let universeId = await rpc.output_dmx.create_universe("Test universe");
 		await rpc.output_dmx.link_universe(universeId, "e131", {
 			external_universe: 1,
 		});
