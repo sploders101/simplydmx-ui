@@ -11,6 +11,7 @@
 	const patcherState = usePatcherState();
 
 	const test = ref("Testing");
+	const testNumber = ref(5);
 	const test2 = ref("test1");
 	const options = [
 		{
@@ -161,6 +162,7 @@
 	</Tabs>
 
 	<Textbox v-model="test" class="spaced" />
+	<NumberInput v-model="testNumber" class="spaced" />
 	<Dropdown v-model="test2" :options="options" class="spaced" />
 	<Button @click="testButton()" class="spaced">Run initialization test</button>
 	<Dialog v-model:visible="dialogVisible">

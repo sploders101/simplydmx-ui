@@ -72,7 +72,8 @@
 			gap: 0.75rem;
 
 			& > .largeselect-search {
-				flex-grow: 1;
+				flex: 1 1 0;
+				width: 5rem;
 			}
 		}
 

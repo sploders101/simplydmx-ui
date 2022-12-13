@@ -2,6 +2,7 @@ import type { App } from "vue";
 import Icon from "@/components/generic/icon.vue";
 import Tooltip from "@/components/generic/tooltip.vue";
 import Textbox from "@/components/generic/textbox.vue";
+import NumberInput from "@/components/generic/number.vue";
 import Dropdown from "@/components/generic/dropdown.vue";
 import Button from "@/components/generic/button.vue";
 import Dialog from "@/components/generic/dialog.vue";
@@ -13,6 +14,7 @@ const globalComponents = {
 	Icon,
 	Tooltip,
 	Textbox,
+	NumberInput,
 	Dropdown,
 	Button,
 	Dialog,
