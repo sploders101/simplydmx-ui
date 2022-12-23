@@ -12,7 +12,11 @@ export type AbstractLayerLight = Record<string, BlenderValue>;
  */
 export type BlenderValue = { type: "None" } | { type: "Static"; value: number } | { type: "Offset"; value: number };
 
-/** This type is currently undocumented. I will be working to resolve this for all types in the near future. */
+/**
+ * This contains data that indicates how a channel should be blended.
+ * 
+ * It is provided by the fixture description to tweak the properties of a layer's blending function.
+ */
 export interface BlendingData {
     scheme: BlendingScheme;
     snap: SnapData;
@@ -46,32 +50,50 @@ export type ChannelSize = "U8" | "U16";
  */
 export type ChannelType = { type: "Segmented"; segments: Segment[]; priority: BlendingScheme; snapping: SnapData | null } | { type: "Linear"; priority: BlendingScheme };
 
-/** This type is currently undocumented. I will be working to resolve this for all types in the near future. */
+/**
+ * An error that could occur when creating a fixture
+ */
 export type CreateFixtureError = "FixtureTypeMissing" | "ControllerMissing" | { ErrorFromController: CreateInstanceError };
 
-/** This type is currently undocumented. I will be working to resolve this for all types in the near future. */
+/**
+ * A generic error originating from an OutputDriver interface when creating a fixture instance
+ */
 export type CreateInstanceError = { type: "InvalidData" } | ({ type: "Other" } & string) | { type: "Unknown" };
 
-/** This type is currently undocumented. I will be working to resolve this for all types in the near future. */
+/**
+ * DMX-specific components of a fixture definition.
+ * 
+ * This goes in the output_info, property of a `FixtureBundle` object
+ */
 export interface DMXFixtureData {
     personalities: Record<string, DMXPersonalityData>;
 }
 
-/** This type is currently undocumented. I will be working to resolve this for all types in the near future. */
+/**
+ * This holds DMX-specific information about a fixture instance
+ */
 export interface DMXFixtureInstance {
     universe: Uuid | null;
     offset: number | null;
 }
 
-/** This type is currently undocumented. I will be working to resolve this for all types in the near future. */
+/**
+ * An error that could occur while initializing the DMX plugin
+ */
 export type DMXInitializationError = "UnrecognizedData";
 
-/** This type is currently undocumented. I will be working to resolve this for all types in the near future. */
+/**
+ * DMX-specific personality data
+ * 
+ * This goes inside a `DMXFixtureData` instance
+ */
 export interface DMXPersonalityData {
     dmx_channel_order: string[];
 }
 
-/** This type is currently undocumented. I will be working to resolve this for all types in the near future. */
+/**
+ * The DMX portion of the show file
+ */
 export interface DMXShowSave {
     library: Record<Uuid, DMXFixtureData>;
     fixtures: Record<Uuid, DMXFixtureInstance>;
@@ -94,26 +116,36 @@ export interface DropdownOptionJSON {
     value: Value;
 }
 
-/** This type is currently undocumented. I will be working to resolve this for all types in the near future. */
+/**
+ * The E131 portion of the show file
+ */
 export interface E131DMXShowSave {
     universes: Record<Uuid, E131Universe>;
 }
 
-/** This type is currently undocumented. I will be working to resolve this for all types in the near future. */
+/**
+ * An error that could occur while initializing the E131 plugin
+ */
 export type E131InitializationError = "UnrecognizedData";
 
-/** This type is currently undocumented. I will be working to resolve this for all types in the near future. */
+/**
+ * E131-specific DMX universe data
+ */
 export interface E131Universe {
     external_universe: number;
 }
 
-/** This type is currently undocumented. I will be working to resolve this for all types in the near future. */
+/**
+ * A generic error originating from an OutputDriver interface when editing an existing fixture instance
+ */
 export type EditError = { type: "InvalidData" } | ({ type: "Other" } & string) | { type: "Unknown" };
 
 /** Represents criteria used to filter an event. For example, a submaster UUID could be used to filter submaster updates by that specific submaster */
 export type FilterCriteria = { type: "None" } | { type: "String"; data: string } | { type: "Uuid"; data: Uuid };
 
-/** This type is currently undocumented. I will be working to resolve this for all types in the near future. */
+/**
+ * Importable fixture descriptor bundle that includes output driver-specific information
+ */
 export interface FixtureBundle {
     fixture_info: FixtureInfo;
     output_info: SerializedData;
@@ -154,76 +186,117 @@ export interface FixtureMeta {
     manual_link: string | null;
 }
 
-/** This type is currently undocumented. I will be working to resolve this for all types in the near future. */
+/**
+ * Describes a form-style UI using a frontend-agnostic generic data structure
+ */
 export type FormDescriptor = FormItem[];
 
-/** This type is currently undocumented. I will be working to resolve this for all types in the near future. */
+/**
+ * Describes a dropdown component as part of a form
+ */
 export interface FormDropdown {
     label: string;
     id: string;
     item_source: FormItemOptionSource;
 }
 
-/** This type is currently undocumented. I will be working to resolve this for all types in the near future. */
+/**
+ * Describes a form element
+ */
 export type FormItem = { Textbox: FormTextbox } | { Number: FormNumber } | { Dropdown: FormDropdown } | { Section: FormSection } | { VerticalStack: FormItem[] } | { HorizontalStack: FormItem[] };
 
-/** This type is currently undocumented. I will be working to resolve this for all types in the near future. */
+/**
+ * Describes a source for dropdown/autocomplete options
+ */
 export type FormItemOptionSource = { Static: { values: DropdownOptionJSON[] } } | { TypeSpec: { typespec_id: string } };
 
-/** This type is currently undocumented. I will be working to resolve this for all types in the near future. */
+/**
+ * Describes a number input as part of a form
+ */
 export interface FormNumber {
     label: string;
     id: string;
 }
 
-/** This type is currently undocumented. I will be working to resolve this for all types in the near future. */
+/**
+ * Describes a visual container for form elements
+ */
 export interface FormSection {
     label: string;
-    form_items: FormItem[];
+    form_item: FormItem;
 }
 
-/** This type is currently undocumented. I will be working to resolve this for all types in the near future. */
+/**
+ * Describes a textbox as part of a form
+ */
 export interface FormTextbox {
     label: string;
     id: string;
 }
 
-/** This type is currently undocumented. I will be working to resolve this for all types in the near future. */
+/**
+ * A generic error originating from an OutputDriver interface when importing a fixture definition
+ */
 export type ImportError = { type: "InvalidData" } | ({ type: "Other" } & string) | { type: "Unknown" };
 
-/** This type is currently undocumented. I will be working to resolve this for all types in the near future. */
+/**
+ * An error that could occur when importing a fixture definition
+ */
 export type ImportFixtureError = "UnknownController" | { ErrorFromController: ImportError };
 
-/** This type is currently undocumented. I will be working to resolve this for all types in the near future. */
+/**
+ * An error that could occur while attempting to call a JSON service
+ */
 export type JSONCallServiceError = { type: "ServiceNotFound" } | { type: "ArgDeserializationFailed" } | { type: "ResponseSerializationFailed" };
 
-/** This type is currently undocumented. I will be working to resolve this for all types in the near future. */
+/**
+ * Describes a command to be sent via a JSON or equivalent API
+ */
 export type JSONCommand = { type: "CallService"; message_id: number; plugin_id: string; service_id: string; args: Value[] } | { type: "GetServices"; message_id: number } | { type: "GetOptions"; message_id: number; provider_id: string } | { type: "SendEvent"; name: string; criteria: FilterCriteria | null; data: Value } | { type: "Subscribe"; name: string; criteria: FilterCriteria | null } | { type: "Unsubscribe"; name: string; criteria: FilterCriteria | null };
 
-/** This type is currently undocumented. I will be working to resolve this for all types in the near future. */
+/**
+ * Describes an event to be sent to a client via a JSON or equivalent API
+ */
 export type JSONResponse = { type: "CallServiceResponse"; message_id: number; result: Value } | { type: "ServiceList"; message_id: number; list: ServiceDescription[] } | { type: "OptionsList"; message_id: number; list: { Ok: DropdownOptionJSON[] } | { Err: TypeSpecifierRetrievalError } } | { type: "CallServiceError"; message_id: number; error: JSONCallServiceError } | { type: "Event"; name: string; criteria: FilterCriteria; data: Value };
 
-/** This type is currently undocumented. I will be working to resolve this for all types in the near future. */
+/**
+ * An error that could occur while linking a DMX universe to a universe controller
+ */
 export type LinkUniverseError = { type: "ErrorFromController"; data: RegisterUniverseError } | { type: "UniverseNotFound" } | { type: "ControllerNotFound" };
 
-/** This type is currently undocumented. I will be working to resolve this for all types in the near future. */
+/**
+ * Data used by the mixer to blend submasters and produce a final result
+ */
 export interface MixerContext {
     default_context: MixingContext;
     frozen_context: MixingContext | null;
     blind_opacity: number;
 }
 
-/** This type is currently undocumented. I will be working to resolve this for all types in the near future. */
+/**
+ * An error that could occur while initializing the mixer plugin
+ */
 export type MixerInitializationError = "UnrecognizedData";
 
-/** This type is currently undocumented. I will be working to resolve this for all types in the near future. */
+/**
+ * Describes a single mixer instance, with its own internal state for driving layers and effects
+ * 
+ * Multiple instances are used for creating a blind mode
+ */
 export interface MixingContext {
     layer_order: Uuid[];
     layer_opacities: Record<Uuid, number>;
     user_submasters: Record<Uuid, StaticLayer>;
 }
 
-/** This type is currently undocumented. I will be working to resolve this for all types in the near future. */
+/**
+ * Describes validation criteria for a number input
+ */
+export type NumberValidation = { And: NumberValidation[] } | { Or: NumberValidation[] } | { Between: [number, number] } | { DivisibleBy: number };
+
+/**
+ * An error that could occur while initializing the patcher plugin
+ */
 export type PatcherInitializationError = "UnrecognizedData";
 
 /**
@@ -251,7 +324,9 @@ export type RegisterUniverseError = "InvalidData" | { Other: string } | "Unknown
  */
 export type SaveError = { type: "SaverReturnedErr"; data: { error: string } } | { type: "ErrorSerializing"; data: { error: string } } | { type: "Unsafe" };
 
-/** This type is currently undocumented. I will be working to resolve this for all types in the near future. */
+/**
+ * Describes the state of the show controller backend during initialization
+ */
 export type SaverInitializationStatus = { type: "FinishedSafe" } | { type: "FinishedUnsafe" } | { type: "Initializing" };
 
 /**
@@ -290,22 +365,33 @@ export interface ServiceDescription {
     returns: ServiceArgumentOwned | null;
 }
 
-/** This type is currently undocumented. I will be working to resolve this for all types in the near future. */
+/**
+ * Sharable (and serializable) component of the patcher state containing
+ * information about registered fixtures
+ */
 export interface SharablePatcherState {
     library: Record<Uuid, FixtureInfo>;
     fixture_order: Uuid[];
     fixtures: Record<Uuid, FixtureInstance>;
 }
 
-/** This type is currently undocumented. I will be working to resolve this for all types in the near future. */
+/**
+ * Describes an entire show file containing fragments from every plugin
+ */
 export interface ShowFile {
     plugin_data: Record<string, number[]>;
 }
 
-/** This type is currently undocumented. I will be working to resolve this for all types in the near future. */
+/**
+ * This indicates if a value should snap to a new value. This is useful for things like gobos, where
+ * intermediate values don't blend, and can instead cause distraction by rapidly switching between noticably
+ * discrete states.
+ */
 export type SnapData = { type: "NoSnap" } | { type: "SnapAt"; data: number };
 
-/** This type is currently undocumented. I will be working to resolve this for all types in the near future. */
+/**
+ * Defines a static submaster
+ */
 export interface StaticLayer {
     values: SubmasterData;
 }
@@ -318,7 +404,9 @@ export type SubmasterData = Record<Uuid, AbstractLayerLight>;
 /** Describes an error that occurred while retrieving items for a dropdown list */
 export type TypeSpecifierRetrievalError = "SpecifierNotFound";
 
-/** This type is currently undocumented. I will be working to resolve this for all types in the near future. */
+/**
+ * This represents a DMX universe instance
+ */
 export interface UniverseInstance {
     id: Uuid;
     name: string;
