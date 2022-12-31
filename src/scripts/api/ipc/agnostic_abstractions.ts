@@ -1,3 +1,4 @@
+import { UnionToIntersection } from "@vue/shared";
 import * as rpc from "rpc__internal";
 import {
 	Event,
@@ -197,3 +198,25 @@ export async function callService(pluginId: string, serviceId: string, args: any
 	return response;
 }
 
+export type RustEnum = Record<string, any>;
+export type MatchArms<Enum, ReturnType> = { [K in keyof UnionToIntersection<Enum>]: (arg: UnionToIntersection<Enum>[K]) => ReturnType };
+export type MatchReturn<Enum, Cases extends MatchArms<Enum, any>> = Cases extends MatchArms<Enum, infer ReturnType> ? ReturnType : never;
+
+/**
+ * This type allows throwing an arbitrary compile-time error if an enum changes when using `exhaustiveMatch` isn't possible.
+ *
+ * This can be used as a reminder that a particular piece of code needs to handle all instances of an enum in something like
+ * a template.
+ */
+export type ExhaustiveFlag<_Enum extends RustEnum, _HandledCases extends { [K in keyof UnionToIntersection<_Enum>]: any }> = never;
+
+/**
+ * Dumbed-down version of Rust's match statement for use in TypeScript. This is intended to take an exported Rust enum type
+ * and create an exhaustive list of cases for each enum variant.
+ */
+export function exhaustiveMatch<Enum extends RustEnum, Cases extends MatchArms<Enum, any>>(rustEnum: Enum, arms: Cases): MatchReturn<Enum, Cases> {
+	const entries = Object.entries(rustEnum);
+	if (entries.length !== 1) throw new Error("Invalid Rust enum. This should have been checked at compile time.");
+
+	return arms[entries[0][0] as keyof Enum](entries[0][1]);
+}
