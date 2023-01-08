@@ -3,18 +3,22 @@ $foreground-color: rgb(255, 255, 255, 0.9);
 // $accent-color: rgb(235, 113, 0);
 $accent-color: rgb(0, 154, 3);
 
+.app > .content {
+	background: #101010E0;
+}
+
 :root {
 	// Color palette
-	--background-color: #{$background-color};
-	--sidebar-color: #{darken($background-color, 3%)};
-	--accent-color: #{$accent-color};
-	--text-color: #{$foreground-color};
-	--input-background: rgb(30, 30, 30);
-	--option-hover: #{lighten($background-color, 20%)};
+	--background-color: #00000050;
+	--sidebar-color: #00000020;
+	--accent-color: rgb(0, 154, 3);
+	--text-color: rgba(255, 255, 255, 0.9);
+	--input-background: rgba(30, 30, 30, 0.5);
+	--option-hover: #575757;
 
 	// Sidebar
-	--sidebar-link-background: #{lighten($background-color, 5%)};
-	--sidebar-icon-color: #{$foreground-color};
+	--sidebar-link-background: #31313100;
+	--sidebar-icon-color: rgba(255, 255, 255, 0.9);
 	--layout-border: 1px solid var(--unfocused-border-color);
 
 	// Tooltip
@@ -33,13 +37,13 @@ $accent-color: rgb(0, 154, 3);
 	// --popover-backdrop-filter: none;
 
 	// Focus/Blur
-	--unfocused-border-color: #{lighten($background-color, 20%)};
+	--unfocused-border-color: #575757;
 	--unfocused-shadow: none;
 	--focused-border-color: var(--accent-color);
-	--focused-shadow: 0 0 1rem 0 #{darken($accent-color, 10%)}, inset 0 0 5px 5px rgba(0, 0, 0, 0.25);
+	--focused-shadow: 0 0 1rem 0 #006702, inset 0 0 5px 5px rgba(0, 0, 0, 0.25);
 
 	// Button
-	--button-hover-bg: #{change-color($accent-color, $alpha: 0.125)};
+	--button-hover-bg: rgba(0, 154, 3, 0.125);
 	--button-hover-border-color: var(--accent-color);
 	--button-shadow-depressed: inset 0 0 10px 5px rgba(0, 0, 0, 0.25);
 	--button-subtle-bg: transparent;
@@ -48,17 +52,17 @@ $accent-color: rgb(0, 154, 3);
 	// Dialog
 	--dialog-modal-background: rgba(0, 0, 0, 0.25);
 	--dialog-modal-filter: blur(3px);
-	--dialog-background: var(--background-color);
+	--dialog-background: #242424EE;
 	--dialog-border-color: var(--unfocused-border-color);
 	--dialog-box-shadow: 0 0 1rem 0 black;
 
 	// Tabs
-	--focused-tab-shadow: 0 0 5px 2px #{darken($accent-color, 10%)};
+	--focused-tab-shadow: 0 0 5px 2px #006702;
 	--focused-tab-color: var(--focused-border-color);
 	--tab-bg-hovered: rgba(100, 100, 100, 0.125);
 
 	// LargeSelect
-	--largeselect-background: #{lighten($background-color, 5%)};
-	--largeselect-focused-background: #{change-color($accent-color, $alpha: 0.25)};
-	--largeselect-hover-background: #{lighten($background-color, 10%)}
+	--largeselect-background: #212121FF;
+	--largeselect-focused-background: rgba(0, 154, 3, 0.25);
+	--largeselect-hover-background: #3E3E3E;
 }
