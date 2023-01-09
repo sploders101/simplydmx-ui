@@ -234,6 +234,9 @@ export interface FormTextbox {
     id: string;
 }
 
+/** This type is currently undocumented. I will be working to resolve this for all types in the near future. */
+export type GetCreationFormError = "FixtureTypeMissing";
+
 /**
  * A generic error originating from an OutputDriver interface when importing a fixture definition
  */
@@ -292,7 +295,7 @@ export interface MixingContext {
 /**
  * Describes validation criteria for a number input
  */
-export type NumberValidation = { And: NumberValidation[] } | { Or: NumberValidation[] } | { Between: [number, number] } | { DivisibleBy: number };
+export type NumberValidation = "None" | { And: NumberValidation[] } | { Or: NumberValidation[] } | { Between: [number, number] } | { DivisibleBy: number };
 
 /**
  * An error that could occur while initializing the patcher plugin
@@ -448,6 +451,7 @@ export const output_dmx = {
 
 export const patcher = {
 	create_fixture(fixture_type: Uuid, personality: string, name: string | null, comments: string | null, form_data: SerializedData): Promise<{ Ok: Uuid } | { Err: CreateFixtureError }> { return callService("patcher", "create_fixture", [fixture_type, personality, name, comments, form_data]) },
+	get_creation_form(fixture_type: Uuid): Promise<{ Ok: FormDescriptor } | { Err: GetCreationFormError }> { return callService("patcher", "get_creation_form", [fixture_type]) },
 	get_patcher_state(): Promise<SharablePatcherState> { return callService("patcher", "get_patcher_state", []) },
 	import_fixture(fixture_bundle: FixtureBundle): Promise<{ Ok: null } | { Err: ImportFixtureError }> { return callService("patcher", "import_fixture", [fixture_bundle]) },
 };

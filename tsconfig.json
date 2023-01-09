@@ -13,6 +13,7 @@
 		"esModuleInterop": true,
 		"lib": ["ESNext", "DOM"],
 		"skipLibCheck": true,
+		"types": [],
 		"paths": {
 			"@/*": ["./src/*"],
 			"rpc__internal": ["./src/scripts/api/ipc/ipc_tauri"]

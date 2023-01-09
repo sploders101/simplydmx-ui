@@ -2,12 +2,17 @@ import { UnionToIntersection } from "@vue/shared";
 import * as rpc from "rpc__internal";
 import {
 	Event,
-	FilterCriteria,
 	IPCError,
 	Listener,
 	ListenersWithCriteria,
-	SDMXCommand,
 } from "./types";
+import {
+	DropdownOptionJSON,
+	FilterCriteria,
+	JSONCommand,
+	JSONResponse,
+} from "./rpc";
+import { unwrap } from "@/scripts/helpers";
 
 
 const ipcEvents = new Map<string, ListenersWithCriteria>();
@@ -22,40 +27,53 @@ function getMessageId() {
 	}
 }
 
-function sendRPC<T extends SDMXCommand>(message: T) {
+type NarrowUnion<T extends {}, Key extends keyof T, Value extends T[Key]> = T extends Record<Key, Value> ? T : never;
+
+type RPCCommand<T extends JSONCommand["type"]> = Omit<NarrowUnion<JSONCommand, "type", T>, "message_id">;
+type RPCResponse<T extends JSONResponse["type"]> = NarrowUnion<JSONResponse, "type", T>;
+
+function sendRPC<T extends RPCCommand<"CallService">>(message: T): Promise<RPCResponse<"CallServiceResponse" | "CallServiceError">>;
+function sendRPC<T extends RPCCommand<"GetServices">>(message: T): Promise<RPCResponse<"ServiceList">>;
+function sendRPC<T extends RPCCommand<"GetOptions">>(message: T): Promise<RPCResponse<"OptionsList">>;
+function sendRPC<T extends RPCCommand<"SendEvent">>(message: T): Promise<void>;
+function sendRPC<T extends RPCCommand<"Subscribe">>(message: T): Promise<void>;
+function sendRPC<T extends RPCCommand<"Unsubscribe">>(message: T): Promise<void>;
+function sendRPC<T extends Omit<JSONCommand, "message_id">>(message: T) {
 	let request: Promise<unknown>;
 	switch(message.type) {
 		case "CallService":
 		case "GetServices":
+		case "GetOptions":
 			return new Promise((res, rej) => {
-				message.message_id = getMessageId();
-				activeMessages.set(message.message_id!, [res, rej]);
-				rpc.sendRPC(message)
+				const message_id = getMessageId();
+				activeMessages.set(message_id!, [res, rej]);
+				rpc.sendRPC({ ...(message as any), message_id })
 					.catch((reason) => {
-						activeMessages.delete(message.message_id!);
+						activeMessages.delete(message_id!);
 						rej(reason);
 					});
 			});
 		case "SendEvent":
 		case "Subscribe":
 		case "Unsubscribe":
-			request = rpc.sendRPC(message);
+			request = rpc.sendRPC(message as any);
 			return request;
 	}
 }
 
 rpc.connect((event) => {
-	let res;
 	switch(event.type) {
 		case "CallServiceResponse":
-			[res] = activeMessages.get(event.message_id);
-			res(event.result);
+			activeMessages.get(event.message_id)[0](event.result);
 			break;
 		case "CallServiceError":
 			activeMessages.get(event.message_id)[1](new IPCError(event.error));
 			break;
 		case "ServiceList":
 			activeMessages.get(event.message_id)[0](event.list);
+			break;
+		case "OptionsList":
+			activeMessages.get(event.message_id)[0](event);
 			break;
 		case "Event":
 			let listeners = ipcEvents.get(event.name);
@@ -194,8 +212,15 @@ export async function callService(pluginId: string, serviceId: string, args: any
 		service_id: serviceId,
 		args,
 	});
-
 	return response;
+}
+
+export async function getTypeSpecOptions(provider_id: string): Promise<DropdownOptionJSON[]> {
+	const response = await sendRPC({
+		type: "GetOptions",
+		provider_id,
+	});
+	return unwrap(response.list);
 }
 
 export type RustEnum = Record<string, any>;
