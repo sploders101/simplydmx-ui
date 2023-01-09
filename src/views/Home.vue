@@ -7,6 +7,7 @@
 	import { SelectEvent } from "@/components/generic/largeselect.vue";
 	import { usePatcherState } from "@/stores/patcher";
 	import { Channel, ChannelSize } from "@/scripts/api/ipc";
+	import { useTypeSpecState } from "@/stores/typespec";
 
 	const patcherState = usePatcherState();
 
@@ -127,7 +128,10 @@
 		await rpc.mixer.set_layer_contents(submasterId, newContents);
 		await rpc.mixer.set_layer_opacity(submasterId, Math.floor(Math.random() * 65535), true);
 	}
-	
+
+	const typespec = useTypeSpecState("universes");
+	const test3 = ref("");
+
 </script>
 
 <template>
@@ -146,6 +150,7 @@
 			</p>
 			<p>{{ test }}</p>
 			<p>{{ test2 }}</p>
+			<p>{{ JSON.stringify(typespec) }}</p>
 		</Tabitem>
 		<Tabitem tab="test2">
 			<LargeSelect :options="[1, 2, 3, 4, 5].map((i) => ({ label: 'Test ' + i, value: i}))" v-model="selectValue" enableSearch />
@@ -164,6 +169,7 @@
 	<Textbox v-model="test" class="spaced" />
 	<NumberInput v-model="testNumber" class="spaced" />
 	<Dropdown v-model="test2" :options="options" class="spaced" />
+	<Dropdown v-model="test3" :options="typespec || []" class="spaced" />
 	<Button @click="testButton()" class="spaced">Run initialization test</button>
 	<Dialog v-model:visible="dialogVisible">
 		<template #header>
