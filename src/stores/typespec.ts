@@ -19,7 +19,7 @@ function fetchTypeSpecs() {
 // with an integration into the event system, but I need to make some progress for "Motivation Bridge"
 // (https://www.youtube.com/watch?v=w7eWb0nINPg)
 // Tracking issue: https://github.com/sploders101/simplydmx-ui/issues/1
-export function useTypeSpecState(providerId: string | null | Ref<string | null> | ComputedRef<string | null>) {
+export function useTypeSpecState(providerId: string | null | Ref<string | null> | ComputedRef<string | null> | (() => string | null)) {
 	function attach(updateInterval: boolean, providerId: string | null) {
 		if (providerId !== null) {
 			const storedSpec = activeTypeSpecs.get(providerId);
@@ -49,11 +49,19 @@ export function useTypeSpecState(providerId: string | null | Ref<string | null> 
 		}
 	}
 
+	const providerIdResolver = typeof providerId === "function" ? providerId : () => {
+		return typeof providerId === "string"
+			? providerId
+			: providerId === null
+				? null
+				: providerId.value;
+	};
+
 	// Lifecycle hooks
-	const firstProviderId = typeof providerId === "string" ? providerId : providerId === null ? null : providerId.value;
+	const firstProviderId = providerIdResolver();
 	onMounted(() => attach(true, firstProviderId));
 	onUnmounted(() => detach(true, firstProviderId));
-	if (typeof providerId === "object" && providerId !== null) {
+	if ((typeof providerId === "object" || typeof providerId === "function") && providerId !== null) {
 		watch(providerId, (newId, oldId) => {
 			if (oldId) detach(newId !== null, oldId);
 			if (newId) attach(oldId !== null, newId);
@@ -61,7 +69,7 @@ export function useTypeSpecState(providerId: string | null | Ref<string | null> 
 	}
 
 	return computed(() => {
-		const resolvedProviderId = typeof providerId === "string" ? providerId : providerId === null ? null : providerId.value;
+		const resolvedProviderId = providerIdResolver();
 		if (resolvedProviderId === null) return null;
 		const typespec = activeTypeSpecs.get(resolvedProviderId);
 		if (typespec) {
