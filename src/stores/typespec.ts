@@ -10,7 +10,6 @@ function fetchTypeSpecs() {
 		getTypeSpecOptions(typespecId)
 			.then((options) => {
 				slot.value = options;
-				console.log(activeTypeSpecs);
 			}, (err) => console.error("An error occurred while fetching TypeSpec options.", err));
 	});
 }
@@ -29,6 +28,7 @@ export function useTypeSpecState(providerId: string | null | Ref<string | null> 
 				storedSpec[0] += 1;
 			}
 		}
+		fetchTypeSpecs();
 		if (updateInterval && interval === null && activeTypeSpecs.size > 0) {
 			interval = setInterval(fetchTypeSpecs, 2000);
 		}
