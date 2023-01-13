@@ -20,10 +20,12 @@
 	import Textbox from "./textbox.vue";
 
 	const props = defineProps({
+		label: { required: false, type: String },
+		hint: { required: false, type: String },
 		modelValue: { required: true, type: undefined as unknown as PropType<Option["value"]> },
 		options: { required: true, type: Array as PropType<Option[]> },
 		class: { required: false, type: undefined as unknown as PropType<string | string[] | Record<string, boolean>> },
-	})
+	});
 
 	// const props = defineProps<{
 	// 	modelValue: Option["name"],
@@ -113,7 +115,7 @@
 		if (value) {
 			await nextTick();
 			bdFilterFix.value = "none";
-			await new Promise((res) => setTimeout(res, 50));
+			await new Promise((res) => setTimeout(res, 100));
 			bdFilterFix.value = undefined;
 		}
 	});
@@ -138,6 +140,8 @@
 <template>
 	<Textbox
 		ref="textbox"
+		:label="props.label"
+		:hint="props.hint"
 		v-model="searchValue"
 		icon-right="chevronDown"
 		:class="{ 'dropdown-open': dropdownOpen, ...classes }"
@@ -204,6 +208,7 @@
 		margin-top: 0;
 		overflow: auto;
 		border: $border-size solid var(--focused-border-color);
+		z-index: 1;
 
 		// -webkit-backdrop-filter needed here to mitigate the noticability of a safari bug
 		transition: height 200ms, -webkit-backdrop-filter 200ms;

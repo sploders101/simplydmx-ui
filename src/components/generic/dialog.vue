@@ -127,8 +127,9 @@
 		border: 1px solid var(--dialog-border-color);
 		box-shadow: var(--dialog-box-shadow);
 		border-radius: 1rem;
-		max-width: 50vw;
+		max-width: 90vw;
 		min-width: 30rem;
+		overflow: auto;
 
 
 		& > .sdmx-dialog__header {

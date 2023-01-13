@@ -3,12 +3,25 @@
 	import { usePatcherState } from "@/stores/patcher";
 	import DynamicForm from "@/components/forms/DynamicForm.vue";
 	import {
+		FormDescriptor,
 		patcher,
 	} from "@/scripts/api/ipc";
+	import { Option } from "@/components/generic/dropdown.vue";
+	import { unwrap } from "@/scripts/helpers";
+	import { getDefaultFormData } from "@/components/forms/helpers";
 
 	const state = usePatcherState();
+	const fixtureTypes = computed<Option[]>(() => {
+		if (!state.value) return [];
+
+		return Object.values(state.value.library).map((info) => {
+			return {
+				name: info.name,
+				value: info.id,
+			};
+		});
+	});
 	const lightOptions = computed(() => {
-		console.log(state.value);
 		if (!state.value) return [];
 		return state.value.fixture_order.map((value) => {
 			const fixture = state.value!.fixtures[value];
@@ -28,11 +41,29 @@
 	}, { immediate: true });
 
 	const addFixtureDialog = ref<boolean>(false);
-	const newFixtureData = ref<null>(null);
 	function cancelAddingFixture() {
 		addFixtureDialog.value = false;
-		newFixtureData.value = null;
+		fixtureToAdd.value = null;
 	}
+
+	const fixtureToAdd = ref<string | null>(null);
+
+	const addFixtureForm = ref<[FormDescriptor, any] | null>(null);
+	watch(fixtureToAdd, (queryFixture) => {
+		if (queryFixture) {
+			patcher.get_creation_form(queryFixture)
+				.then((formResult) => {
+					if (fixtureToAdd.value === queryFixture) {
+						let formDescriptor = unwrap(formResult);
+						let formData = getDefaultFormData(formDescriptor);
+						console.log([formDescriptor, formData]);
+						addFixtureForm.value = [formDescriptor, formData];
+					}
+				});
+		} else {
+			addFixtureForm.value = null;
+		}
+	});
 
 	/** Adds the fixture  */
 	function addFixture() {
@@ -61,6 +92,20 @@
 			<template #header>
 				Add Fixture
 			</template>
+
+			<Dropdown
+				label="Fixture Type"
+				v-model="fixtureToAdd"
+				:options="fixtureTypes"
+				class="spaced"
+				/>
+
+			<DynamicForm
+				v-if="addFixtureForm"
+				class="spaced"
+				:form="{ VerticalStack: addFixtureForm[0] }"
+				:formData="addFixtureForm[1]"
+				/>
 			
 			<template #footer>
 				<Button @click="cancelAddingFixture()" subtle class="spaced">

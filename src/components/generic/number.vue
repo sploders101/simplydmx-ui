@@ -6,7 +6,7 @@
 		modelValue: number,
 		iconRight?: IconPath,
 		textboxId?: string,
-		hint?: string,
+		label?: string,
 	}>();
 	const emit = defineEmits<{
 		(event: "update:modelValue", value: number): void,
@@ -32,67 +32,77 @@
 
 <template>
 	<div
-		class="sdmx-textbox"
+		class="sdmx-numberbox"
 		@click.stop="textbox?.focus()"
 		>
-		<input
-			type="number"
-			:id="props.textboxId"
-			ref="textbox"
-			autocomplete="off"
-			spellcheck="false"
-			autocapitalize="off"
-			:value="String(props.modelValue)"
-			:placeholder="props.hint"
-			@input="handleInput($event as InputEvent)"
-			@focus="emit('focus')"
-			@blur="handleBlur($event)"
-			@keypress.esc.prevent="textbox!.blur()"
-			>
-		<Icon v-if="props.iconRight" class="trailing-icon" :i="props.iconRight" />
+		<div class="sdmx-numberbox__label" v-if="props.label">{{ props.label }}</div>
+		<div class="sdmx-numberbox__wrapper">
+			<input
+				type="number"
+				:id="props.textboxId"
+				ref="textbox"
+				autocomplete="off"
+				spellcheck="false"
+				autocapitalize="off"
+				:value="String(props.modelValue)"
+				@input="handleInput($event as InputEvent)"
+				@focus="emit('focus')"
+				@blur="handleBlur($event)"
+				@keypress.esc.prevent="textbox!.blur()"
+				>
+			<Icon v-if="props.iconRight" class="trailing-icon" :i="props.iconRight" />
+		</div>
 	</div>
 </template>
 
 <style lang="scss">
-	.sdmx-textbox {
-		display: flex;
-		flex-flow: row nowrap;
-		align-items: center;
+	.sdmx-numberbox {
 
-		outline: none;
-		border: 1px solid var(--unfocused-border-color);
-		font-size: 1.125rem;
-		transition: border-color 200ms, box-shadow 200ms;
-		box-shadow: var(--unfocused-shadow);
-		border-radius: var(--border-radius);
-		background: var(--input-background);
-		padding: 0.5rem;
-
-		cursor: text;
-
-		label + & {
-			margin-top: 0;
+		& > .sdmx-numberbox__label {
+			margin-left: 5px;
+			color: var(--label-color);
 		}
 
-		&:has(input:focus) {
-			border: 1px solid var(--focused-border-color);
-			box-shadow: var(--focused-shadow);
-		}
+		& > .sdmx-numberbox__wrapper {
+			display: flex;
+			flex-flow: row nowrap;
+			align-items: center;
 
-		& > input {
-			background: transparent;
 			outline: none;
-			border: none;
+			border: 1px solid var(--unfocused-border-color);
+			font-size: 1.125rem;
+			transition: border-color 200ms, box-shadow 200ms;
+			box-shadow: var(--unfocused-shadow);
+			border-radius: var(--border-radius);
+			background: var(--input-background);
+			padding: 0.5rem;
 
-			text-overflow: ellipsis;
+			cursor: text;
 
-			flex-grow: 1;
-		}
+			label + & {
+				margin-top: 0;
+			}
 
-		& > .trailing-icon {
-			height: 1.5em;
-			width: 1.5em;
-			scale: 1.25;
+			&:has(input:focus) {
+				border: 1px solid var(--focused-border-color);
+				box-shadow: var(--focused-shadow);
+			}
+
+			& > input {
+				background: transparent;
+				outline: none;
+				border: none;
+
+				text-overflow: ellipsis;
+
+				flex-grow: 1;
+			}
+
+			& > .trailing-icon {
+				height: 1.5em;
+				width: 1.5em;
+				scale: 1.25;
+			}
 		}
 	}
 </style>
