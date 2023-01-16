@@ -27,11 +27,6 @@
 		class: { required: false, type: undefined as unknown as PropType<string | string[] | Record<string, boolean>> },
 	});
 
-	// const props = defineProps<{
-	// 	modelValue: Option["name"],
-	// 	options: Option[],
-	// }>();
-
 	const emit = defineEmits<{
 		(event: "update:modelValue", value: Option["value"]): void;
 	}>();
@@ -89,6 +84,9 @@
 	});
 
 	watch(() => props.modelValue, resetSearch, { immediate: true });
+	watch(() => props.options, () => {
+		if (!dropdownOpen.value) resetSearch();
+	}, { deep: true });
 
 	function updateValue(option: Option) {
 		emit('update:modelValue', option.value);

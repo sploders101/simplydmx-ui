@@ -7,6 +7,10 @@
 	} from "@/scripts/api/ipc";
 	import { useTypeSpecState } from "@/stores/typespec";
 	import DynamicForm from "./DynamicForm.vue";
+	import {
+		checkDynamic,
+		checkNumberValidation,
+	} from "./helpers";
 
 
 	const props = defineProps({
@@ -18,6 +22,7 @@
 	// If a new branch is added to or removed from `FormItem`, this will throw
 	// an error to indicate the code is incomplete.
 	type _ExhaustiveFormCheck = ExhaustiveFlag<FormItem, {
+		"Dynamic": any,
 		"Textbox": any,
 		"Number": any,
 		"Dropdown": any,
@@ -46,8 +51,12 @@
 
 <template>
 
+	<template v-if="'Dynamic' in props.form && checkDynamic(props.formData, props.form.Dynamic[0])">
+		<DynamicForm v-for="formItem in props.form.Dynamic[1]" :form="formItem" :formData="props.formData" />
+	</template>
+
 	<Textbox
-		v-if="'Textbox' in props.form"
+		v-else-if="'Textbox' in props.form"
 		:label="props.form.Textbox.label"
 		v-model="props.formData[props.form.Textbox.id]"
 		/>
@@ -56,6 +65,7 @@
 		v-else-if="'Number' in props.form"
 		:label="props.form.Number.label"
 		v-model="props.formData[props.form.Number.id]"
+		:error="!checkNumberValidation(props.formData[props.form.Number.id], props.form.Number.validation)"
 		/>
 
 	<Dropdown

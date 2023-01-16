@@ -7,6 +7,7 @@
 		mdiSpotlightBeam,
 		mdiClose,
 		mdiPlus,
+		mdiArrowDownLeft,
 	} from "@mdi/js";
 
 	const paths = {
@@ -18,20 +19,21 @@
 		stageLight: mdiSpotlightBeam,
 		close: mdiClose,
 		plus: mdiPlus,
+		arrowDownLeft: mdiArrowDownLeft,
 	} as const;
 
 	export type IconPath = keyof typeof paths;
 </script>
 
 <script lang="ts" setup>
-	defineProps<{
+	const props = defineProps<{
 		i: keyof typeof paths,
 	}>();
 </script>
 
 <template>
 	<svg class="sdmx-icon" viewBox="0 0 24 24">
-		<path :d="paths[i]" />
+		<path :d="paths[props.i]" />
 	</svg>
 </template>
 

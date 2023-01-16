@@ -8,6 +8,7 @@
 		textboxId?: string,
 		hint?: string,
 		label?: string,
+		error?: boolean | string | null,
 	}>();
 	const emit = defineEmits<{
 		(event: "update:modelValue", value: string): void,
@@ -21,9 +22,19 @@
 <template>
 	<div
 		class="sdmx-textbox"
+		:class="{ error: props.error }"
 		@click.stop="textbox?.focus()"
 		>
-		<div class="sdmx-textbox__label" v-if="props.label">{{ props.label }}</div>
+		<div class="sdmx-textbox__label" v-if="props.label || props.error">
+			{{ props.label }}
+			<span v-if="props.error" class="error-text">
+				<Icon
+					i="arrowDownLeft"
+					:style="{ height: '0.5em', fill: 'var(--error-color)' }"
+					/>
+				{{ props.error === true ? "Invalid" : props.error }}
+			</span>
+		</div>
 		<div class="sdmx-textbox__wrapper">
 			<input
 				type="text"
@@ -50,6 +61,19 @@
 		& > .sdmx-textbox__label {
 			margin-left: 5px;
 			color: var(--label-color);
+
+			& > .error-text {
+				color: var(--error-color);
+			}
+		}
+
+		&.error > .sdmx-textbox__wrapper {
+			border-color: var(--error-color);
+
+			&:has(input:focus) {
+				border-color: var(--error-color);
+				box-shadow: var(--error-shadow);
+			}
 		}
 
 		& > .sdmx-textbox__wrapper {

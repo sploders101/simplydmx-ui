@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-	import { nextTick, ref } from "vue";
+	import { ref } from "vue";
 	import { IconPath } from "./icon.vue";
 
 	const props = defineProps<{
@@ -7,6 +7,7 @@
 		iconRight?: IconPath,
 		textboxId?: string,
 		label?: string,
+		error?: boolean | string | null,
 	}>();
 	const emit = defineEmits<{
 		(event: "update:modelValue", value: number): void,
@@ -14,7 +15,7 @@
 		(event: "blur"): void,
 	}>();
 
-	const textbox = ref<HTMLInputElement | null>(null);
+	const numberbox = ref<HTMLInputElement | null>(null);
 
 	function handleInput(event: InputEvent) {
 		const strValue = (event.target as HTMLInputElement).value;
@@ -33,14 +34,24 @@
 <template>
 	<div
 		class="sdmx-numberbox"
-		@click.stop="textbox?.focus()"
+		:class="{ error: props.error }"
+		@click.stop="numberbox?.focus()"
 		>
-		<div class="sdmx-numberbox__label" v-if="props.label">{{ props.label }}</div>
+		<div class="sdmx-numberbox__label" v-if="props.label || props.error">
+			{{ props.label }}
+			<span v-if="props.error" class="error-text">
+				<Icon
+					i="arrowDownLeft"
+					:style="{ height: '0.5em', fill: 'var(--error-color)' }"
+					/>
+				{{ props.error === true ? "Invalid" : props.error }}
+			</span>
+		</div>
 		<div class="sdmx-numberbox__wrapper">
 			<input
 				type="number"
 				:id="props.textboxId"
-				ref="textbox"
+				ref="numberbox"
 				autocomplete="off"
 				spellcheck="false"
 				autocapitalize="off"
@@ -48,7 +59,7 @@
 				@input="handleInput($event as InputEvent)"
 				@focus="emit('focus')"
 				@blur="handleBlur($event)"
-				@keypress.esc.prevent="textbox!.blur()"
+				@keypress.esc.prevent="numberbox!.blur()"
 				>
 			<Icon v-if="props.iconRight" class="trailing-icon" :i="props.iconRight" />
 		</div>
@@ -61,6 +72,19 @@
 		& > .sdmx-numberbox__label {
 			margin-left: 5px;
 			color: var(--label-color);
+
+			& > .error-text {
+				color: var(--error-color);
+			}
+		}
+
+		&.error > .sdmx-numberbox__wrapper {
+			border-color: var(--error-color);
+
+			&:has(input:focus) {
+				border-color: var(--error-color);
+				box-shadow: var(--error-shadow);
+			}
 		}
 
 		& > .sdmx-numberbox__wrapper {

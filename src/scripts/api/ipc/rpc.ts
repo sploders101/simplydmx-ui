@@ -203,7 +203,7 @@ export interface FormDropdown {
 /**
  * Describes a form element
  */
-export type FormItem = { Textbox: FormTextbox } | { Number: FormNumber } | { Dropdown: FormDropdown } | { Section: FormSection } | { VerticalStack: FormItem[] } | { HorizontalStack: FormItem[] };
+export type FormItem = { Dynamic: [InteractiveDescription, FormItem[]] } | { Textbox: FormTextbox } | { Number: FormNumber } | { Dropdown: FormDropdown } | { Section: FormSection } | { VerticalStack: FormItem[] } | { HorizontalStack: FormItem[] };
 
 /**
  * Describes a source for dropdown/autocomplete options
@@ -216,6 +216,7 @@ export type FormItemOptionSource = { Static: { values: DropdownOptionJSON[] } } 
 export interface FormNumber {
     label: string;
     id: string;
+    validation: NumberValidation;
 }
 
 /**
@@ -234,7 +235,9 @@ export interface FormTextbox {
     id: string;
 }
 
-/** This type is currently undocumented. I will be working to resolve this for all types in the near future. */
+/**
+ * An error that could occur while retrieving a fixture creation form
+ */
 export type GetCreationFormError = "FixtureTypeMissing";
 
 /**
@@ -246,6 +249,11 @@ export type ImportError = { type: "InvalidData" } | ({ type: "Other" } & string)
  * An error that could occur when importing a fixture definition
  */
 export type ImportFixtureError = "UnknownController" | { ErrorFromController: ImportError };
+
+/**
+ * Describes a function that can be used to add interactivity to a form
+ */
+export type InteractiveDescription = { Not: InteractiveDescription } | { And: InteractiveDescription[] } | { Or: InteractiveDescription[] } | { Equal: { field_name: string; value: Value } };
 
 /**
  * An error that could occur while attempting to call a JSON service
@@ -295,7 +303,7 @@ export interface MixingContext {
 /**
  * Describes validation criteria for a number input
  */
-export type NumberValidation = "None" | { And: NumberValidation[] } | { Or: NumberValidation[] } | { Between: [number, number] } | { DivisibleBy: number };
+export type NumberValidation = "None" | { Not: NumberValidation } | { And: NumberValidation[] } | { Or: NumberValidation[] } | { Between: [number, number] } | { DivisibleBy: number };
 
 /**
  * An error that could occur while initializing the patcher plugin
@@ -405,7 +413,7 @@ export interface StaticLayer {
 export type SubmasterData = Record<Uuid, AbstractLayerLight>;
 
 /** Describes an error that occurred while retrieving items for a dropdown list */
-export type TypeSpecifierRetrievalError = "SpecifierNotFound";
+export type TypeSpecifierRetrievalError = "SpecifierNotFound" | "SerializationError";
 
 /**
  * This represents a DMX universe instance

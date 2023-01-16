@@ -31,6 +31,14 @@
 			};
 		});
 	});
+	const personalityOptions = computed(() => {
+		if (!state.value) return [];
+		if (!fixtureToAdd.value) return [];
+		return Object.keys(state.value.library[fixtureToAdd.value].personalities).map<Option>((key) => ({
+			name: key,
+			value: key,
+		}));
+	})
 
 	const selectedFixture = ref<string | null>(null);
 
@@ -44,9 +52,13 @@
 	function cancelAddingFixture() {
 		addFixtureDialog.value = false;
 		fixtureToAdd.value = null;
+		personality.value = null;
+		name.value = "";
 	}
 
 	const fixtureToAdd = ref<string | null>(null);
+	const personality = ref<string | null>(null);
+	const name = ref<string>("");
 
 	const addFixtureForm = ref<[FormDescriptor, any] | null>(null);
 	watch(fixtureToAdd, (queryFixture) => {
@@ -66,8 +78,19 @@
 	});
 
 	/** Adds the fixture  */
-	function addFixture() {
-		return
+	async function addFixture() {
+		if (fixtureToAdd.value && personality.value && name.value && addFixtureForm.value) {
+			unwrap(await patcher.create_fixture(
+				fixtureToAdd.value,
+				personality.value,
+				name.value,
+				"",
+				addFixtureForm.value[1],
+			));
+			cancelAddingFixture();
+		} else {
+			alert("Invalid form details");
+		}
 	}
 </script>
 
@@ -88,7 +111,7 @@
 		<div class="patcher-fixture-prefs">
 		</div>
 
-		<Dialog :visible="addFixtureDialog">
+		<Dialog :visible="addFixtureDialog" :show-close="false">
 			<template #header>
 				Add Fixture
 			</template>
@@ -97,6 +120,19 @@
 				label="Fixture Type"
 				v-model="fixtureToAdd"
 				:options="fixtureTypes"
+				class="spaced"
+				/>
+
+			<Dropdown
+				label="Personality"
+				v-model="personality"
+				:options="personalityOptions"
+				class="spaced"
+				/>
+
+			<Textbox
+				label="Name"
+				v-model="name"
 				class="spaced"
 				/>
 

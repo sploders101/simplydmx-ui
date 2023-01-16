@@ -223,9 +223,15 @@ export async function getTypeSpecOptions(provider_id: string): Promise<DropdownO
 	return unwrap(response.list);
 }
 
-export type RustEnum = Record<string, any>;
-export type MatchArms<Enum, ReturnType> = { [K in keyof UnionToIntersection<Enum>]: (arg: UnionToIntersection<Enum>[K]) => ReturnType };
-export type MatchReturn<Enum, Cases extends MatchArms<Enum, any>> = Cases extends MatchArms<Enum, infer ReturnType> ? ReturnType : never;
+export type RustEnum = Record<string, any> | string;
+export type MatchArms<Enum extends RustEnum, ReturnType> =
+	UnionToIntersection<Enum extends string ? { [K in Enum]: () => ReturnType } : {
+		[K in keyof Enum]: (arg: Enum[K]) => ReturnType
+	}>;
+export type MatchReturn<Enum extends RustEnum, Cases extends MatchArms<Enum, any>> =
+	Cases extends MatchArms<Enum, infer ReturnType>
+		? ReturnType
+		: never;
 
 /**
  * This type allows throwing an arbitrary compile-time error if an enum changes when using `exhaustiveMatch` isn't possible.
@@ -240,8 +246,9 @@ export type ExhaustiveFlag<_Enum extends RustEnum, _HandledCases extends { [K in
  * and create an exhaustive list of cases for each enum variant.
  */
 export function exhaustiveMatch<Enum extends RustEnum, Cases extends MatchArms<Enum, any>>(rustEnum: Enum, arms: Cases): MatchReturn<Enum, Cases> {
+	if (typeof rustEnum === "string") return (arms as any)[rustEnum]();
 	const entries = Object.entries(rustEnum);
 	if (entries.length !== 1) throw new Error("Invalid Rust enum. This should have been checked at compile time.");
 
-	return arms[entries[0][0] as keyof Enum](entries[0][1]);
+	return (arms as any)[entries[0][0] as keyof Enum](entries[0][1]);
 }
