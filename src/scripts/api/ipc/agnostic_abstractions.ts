@@ -100,6 +100,9 @@ rpc.connect((event) => {
 			}
 			break;
 	}
+	if ("message_id" in event) {
+		activeMessages.delete(event.message_id);
+	}
 });
 
 export function loadFile(file?: number[]) {
