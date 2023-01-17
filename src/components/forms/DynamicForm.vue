@@ -31,6 +31,9 @@
 		"HorizontalStack": any,
 	}>;
 
+	type SpecificItem<TypeKey extends string, T = Readonly<FormItem>> =
+		T extends { [K in TypeKey]: any } ? T : never;
+
 	const typeSpecOptions = useTypeSpecState((): string | null => {
 		if ("Dropdown" in props.form) {
 			if ("TypeSpec" in props.form.Dropdown.item_source) {
@@ -73,6 +76,12 @@
 		:label="props.form.Dropdown.label"
 		v-model="props.formData[props.form.Dropdown.id]"
 		:options="dropdownOptions"
+		:error="
+			dropdownOptions.some((item) =>
+				item.value === props.formData[(props.form as SpecificItem<'Dropdown'>).Dropdown.id])
+					? null
+					: 'Required'
+		"
 		/>
 
 	<div class="dynamic-form__section" v-else-if="'Section' in props.form">
@@ -80,16 +89,27 @@
 			{{ props.form.Section.label }}
 		</div>
 		<div class="dynamic-form__section-content">
-			<DynamicForm :form="props.form.Section.form_item" :formData="props.formData" />
+			<DynamicForm
+				:form="props.form.Section.form_item"
+				:formData="props.formData"
+				/>
 		</div>
 	</div>
 
 	<div class="dynamic-form__stack vertical" v-else-if="'VerticalStack' in props.form">
-		<DynamicForm v-for="formItem in props.form.VerticalStack" :form="formItem" :formData="props.formData" />
+		<DynamicForm
+			v-for="formItem in props.form.VerticalStack"
+			:form="formItem"
+			:formData="props.formData"
+			/>
 	</div>
 
 	<div class="dynamic-form__stack horizontal" v-else-if="'HorizontalStack' in props.form">
-		<DynamicForm v-for="formItem in props.form.HorizontalStack" :form="formItem" :formData="props.formData" />
+		<DynamicForm
+			v-for="formItem in props.form.HorizontalStack"
+			:form="formItem"
+			:formData="props.formData"
+			/>
 	</div>
 
 </template>

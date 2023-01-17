@@ -3,6 +3,7 @@
 	import { usePatcherState } from "@/stores/patcher";
 	import DynamicForm from "@/components/forms/DynamicForm.vue";
 	import {
+		exhaustiveMatch,
 		FormDescriptor,
 		patcher,
 	} from "@/scripts/api/ipc";
@@ -68,7 +69,6 @@
 					if (fixtureToAdd.value === queryFixture) {
 						let formDescriptor = unwrap(formResult);
 						let formData = getDefaultFormData(formDescriptor);
-						console.log([formDescriptor, formData]);
 						addFixtureForm.value = [formDescriptor, formData];
 					}
 				});
@@ -77,17 +77,45 @@
 		}
 	});
 
+	const creationError = ref<{ header: string, body: string } | null>(null);
+
 	/** Adds the fixture  */
 	async function addFixture() {
 		if (fixtureToAdd.value && personality.value && name.value && addFixtureForm.value) {
-			unwrap(await patcher.create_fixture(
+			let response = await patcher.create_fixture(
 				fixtureToAdd.value,
 				personality.value,
 				name.value,
 				"",
 				addFixtureForm.value[1],
-			));
-			cancelAddingFixture();
+			);
+			exhaustiveMatch(response, {
+				"Ok": () => cancelAddingFixture(),
+				"Err": (err) => exhaustiveMatch(err, {
+					"ControllerMissing": () => creationError.value = {
+						header: "An error occurred",
+						body: "SimplyDMX does not know how to control this fixture. Please make sure any relevant plugins have been loaded.",
+					},
+					"FixtureTypeMissing": () => creationError.value = {
+						header: "An error occurred",
+						body: "SimplyDMX does not recognize the requested fixture. Please file a bug report with the author.",
+					},
+					"ErrorFromController": (err) => exhaustiveMatch(err, {
+						"InvalidData": () => creationError.value = {
+							header: "Form validation failed",
+							body: "SimplyDMX failed to convert form data into a valid fixture definition.",
+						},
+						"Other": (description) => creationError.value = {
+							header: "Something went wrong",
+							body: description,
+						},
+						"Unknown": () => creationError.value = {
+							header: "An error occurred",
+							body: "Unknown error",
+						},
+					}),
+				}),
+			});
 		} else {
 			alert("Invalid form details");
 		}
@@ -149,6 +177,18 @@
 				</Button>
 				<div class="spacer"/>
 				<Button @click="addFixture()" class="spaced">
+					Ok
+				</Button>
+			</template>
+		</Dialog>
+		<Dialog :visible="!!creationError">
+			<template #header>
+				{{ creationError && creationError.header }}
+			</template>
+			{{ creationError && creationError.body }}
+			<template #footer>
+				<div class="spacer"/>
+				<Button @click="creationError = null" subtle class="spaced">
 					Ok
 				</Button>
 			</template>

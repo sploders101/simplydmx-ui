@@ -25,6 +25,7 @@
 		modelValue: { required: true, type: undefined as unknown as PropType<Option["value"]> },
 		options: { required: true, type: Array as PropType<Option[]> },
 		class: { required: false, type: undefined as unknown as PropType<string | string[] | Record<string, boolean>> },
+		error: { required: false, type: undefined as unknown as PropType<boolean | string | null> },
 	});
 
 	const emit = defineEmits<{
@@ -140,6 +141,7 @@
 		ref="textbox"
 		:label="props.label"
 		:hint="props.hint"
+		:error="props.error"
 		v-model="searchValue"
 		icon-right="chevronDown"
 		:class="{ 'dropdown-open': dropdownOpen, ...classes }"

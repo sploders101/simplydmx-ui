@@ -58,7 +58,7 @@ export type CreateFixtureError = "FixtureTypeMissing" | "ControllerMissing" | { 
 /**
  * A generic error originating from an OutputDriver interface when creating a fixture instance
  */
-export type CreateInstanceError = { type: "InvalidData" } | ({ type: "Other" } & string) | { type: "Unknown" };
+export type CreateInstanceError = "InvalidData" | { Other: string } | "Unknown";
 
 /**
  * DMX-specific components of a fixture definition.
@@ -138,7 +138,7 @@ export interface E131Universe {
 /**
  * A generic error originating from an OutputDriver interface when editing an existing fixture instance
  */
-export type EditError = { type: "InvalidData" } | ({ type: "Other" } & string) | { type: "Unknown" };
+export type EditError = "InvalidData" | { Other: string } | "Unknown";
 
 /** Represents criteria used to filter an event. For example, a submaster UUID could be used to filter submaster updates by that specific submaster */
 export type FilterCriteria = { type: "None" } | { type: "String"; data: string } | { type: "Uuid"; data: Uuid };
@@ -198,6 +198,7 @@ export interface FormDropdown {
     label: string;
     id: string;
     item_source: FormItemOptionSource;
+    value: Value;
 }
 
 /**
@@ -217,6 +218,7 @@ export interface FormNumber {
     label: string;
     id: string;
     validation: NumberValidation;
+    value: number | null;
 }
 
 /**
@@ -233,6 +235,7 @@ export interface FormSection {
 export interface FormTextbox {
     label: string;
     id: string;
+    value: string | null;
 }
 
 /**
@@ -241,9 +244,14 @@ export interface FormTextbox {
 export type GetCreationFormError = "FixtureTypeMissing";
 
 /**
+ * An error that could occur while retrieving a fixture edit form
+ */
+export type GetEditFormError = "FixtureMissing" | "FixtureDefinitionMissing" | "ControllerMissing" | { ControllerError: string };
+
+/**
  * A generic error originating from an OutputDriver interface when importing a fixture definition
  */
-export type ImportError = { type: "InvalidData" } | ({ type: "Other" } & string) | { type: "Unknown" };
+export type ImportError = "InvalidData" | { Other: string } | "Unknown";
 
 /**
  * An error that could occur when importing a fixture definition
@@ -460,6 +468,7 @@ export const output_dmx = {
 export const patcher = {
 	create_fixture(fixture_type: Uuid, personality: string, name: string | null, comments: string | null, form_data: SerializedData): Promise<{ Ok: Uuid } | { Err: CreateFixtureError }> { return callService("patcher", "create_fixture", [fixture_type, personality, name, comments, form_data]) },
 	get_creation_form(fixture_type: Uuid): Promise<{ Ok: FormDescriptor } | { Err: GetCreationFormError }> { return callService("patcher", "get_creation_form", [fixture_type]) },
+	get_edit_form(fixture_id: Uuid): Promise<{ Ok: FormDescriptor } | { Err: GetEditFormError }> { return callService("patcher", "get_edit_form", [fixture_id]) },
 	get_patcher_state(): Promise<SharablePatcherState> { return callService("patcher", "get_patcher_state", []) },
 	import_fixture(fixture_bundle: FixtureBundle): Promise<{ Ok: null } | { Err: ImportFixtureError }> { return callService("patcher", "import_fixture", [fixture_bundle]) },
 };
