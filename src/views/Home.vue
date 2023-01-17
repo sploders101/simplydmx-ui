@@ -35,7 +35,9 @@
 
 	function testButton() {
 		if (patcherState.value && patcherState.value.fixture_order.length === 0) {
-			fullTestInvoked();
+			fullTestInvoked().catch((err) => {
+				console.error(err);
+			});
 			dialogVisible.value = true;
 		}
 	}
@@ -84,10 +86,17 @@
 					green: colorChannel("U8"),
 					blue: colorChannel("U8"),
 					white: colorChannel("U8"),
+					red16: colorChannel("U16"),
+					green16: colorChannel("U16"),
+					blue16: colorChannel("U16"),
+					white16: colorChannel("U16"),
 				},
 				personalities: {
 					"8-bit": {
 						available_channels: ["red", "green", "blue", "white"],
+					},
+					"16-bit": {
+						available_channels: ["red16", "green16", "blue16", "white16"],
 					},
 				},
 				output_driver: "DMX",
@@ -96,6 +105,9 @@
 				personalities: {
 					"8-bit": {
 						dmx_channel_order: ["red", "green", "blue", "white"],
+					},
+					"16-bit": {
+						dmx_channel_order: ["red16", "green16", "blue16", "white16"],
 					},
 				},
 			},
@@ -108,12 +120,12 @@
 		await importFixtureTest();
 
 		let universeId = await rpc.output_dmx.create_universe("Test universe");
-		await rpc.output_dmx.link_universe(universeId, "e131", {
+		unwrap(await rpc.output_dmx.link_universe(universeId, "e131", {
 			external_universe: 1,
-		});
+		}));
 		let fixtureId = unwrap(await rpc.patcher.create_fixture("c205635c-037a-4e5c-8a68-59a8a86dae8f", "8-bit", "Test Fixture", null, {
 			universe: universeId,
-			offset: 40,
+			offset: 41,
 		} as rpc.DMXFixtureInstance));
 
 		let submasterId = await rpc.mixer.create_layer();
