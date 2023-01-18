@@ -58,7 +58,7 @@ export type CreateFixtureError = "FixtureTypeMissing" | "ControllerMissing" | { 
 /**
  * A generic error originating from an OutputDriver interface when creating a fixture instance
  */
-export type CreateInstanceError = { InvalidData: string | null } | { Other: string };
+export type CreateInstanceError = { InvalidData: string } | { Other: string };
 
 /**
  * DMX-specific components of a fixture definition.
@@ -138,7 +138,7 @@ export interface E131Universe {
 /**
  * A generic error originating from an OutputDriver interface when editing an existing fixture instance
  */
-export type EditError = { InvalidData: string | null } | { Other: string };
+export type EditError = { InvalidData: string } | { Other: string };
 
 /** Represents criteria used to filter an event. For example, a submaster UUID could be used to filter submaster updates by that specific submaster */
 export type FilterCriteria = { type: "None" } | { type: "String"; data: string } | { type: "Uuid"; data: Uuid };
@@ -251,7 +251,7 @@ export type GetEditFormError = "FixtureMissing" | "FixtureDefinitionMissing" | "
 /**
  * A generic error originating from an OutputDriver interface when importing a fixture definition
  */
-export type ImportError = { InvalidData: string | null } | { Other: string };
+export type ImportError = { InvalidData: string } | { Other: string };
 
 /**
  * An error that could occur when importing a fixture definition
@@ -336,7 +336,7 @@ export type RegisterSavableError = { type: "SaverAlreadyExists" };
 /**
  * An error that occurs while registering a universe
  */
-export type RegisterUniverseError = { InvalidData: string | null } | { Other: string } | "Unknown";
+export type RegisterUniverseError = { InvalidData: string } | { Other: string };
 
 /**
  * An error returned by the saver if saving data failed
