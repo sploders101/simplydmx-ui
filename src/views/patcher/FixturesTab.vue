@@ -181,14 +181,17 @@
 				</Button>
 			</template>
 		</Dialog>
-		<Dialog :visible="!!creationError">
+		<Dialog
+			:visible="!!creationError"
+			@close-clicked="creationError = null"
+			>
 			<template #header>
 				{{ creationError && creationError.header }}
 			</template>
 			{{ creationError && creationError.body }}
 			<template #footer>
 				<div class="spacer"/>
-				<Button @click="creationError = null" subtle class="spaced">
+				<Button @click="creationError = null" class="spaced">
 					Ok
 				</Button>
 			</template>
