@@ -136,9 +136,14 @@ export interface E131Universe {
 }
 
 /**
+ * An error that could occur when creating a fixture
+ */
+export type EditFixtureError = "FixtureMissing" | "FixtureTypeMissing" | "ControllerMissing" | { ErrorFromController: EditInstanceError };
+
+/**
  * A generic error originating from an OutputDriver interface when editing an existing fixture instance
  */
-export type EditError = { InvalidData: string } | { Other: string };
+export type EditInstanceError = { InvalidData: string } | { Other: string };
 
 /** Represents criteria used to filter an event. For example, a submaster UUID could be used to filter submaster updates by that specific submaster */
 export type FilterCriteria = { type: "None" } | { type: "String"; data: string } | { type: "Uuid"; data: Uuid };
@@ -467,6 +472,7 @@ export const output_dmx = {
 
 export const patcher = {
 	create_fixture(fixture_type: Uuid, personality: string, name: string | null, comments: string | null, form_data: SerializedData): Promise<{ Ok: Uuid } | { Err: CreateFixtureError }> { return callService("patcher", "create_fixture", [fixture_type, personality, name, comments, form_data]) },
+	edit_fixture(instance_id: Uuid, personality: string, name: string | null, comments: string | null, form_data: SerializedData): Promise<{ Ok: null } | { Err: EditFixtureError }> { return callService("patcher", "edit_fixture", [instance_id, personality, name, comments, form_data]) },
 	get_creation_form(fixture_type: Uuid): Promise<{ Ok: FormDescriptor } | { Err: GetCreationFormError }> { return callService("patcher", "get_creation_form", [fixture_type]) },
 	get_edit_form(fixture_id: Uuid): Promise<{ Ok: FormDescriptor } | { Err: GetEditFormError }> { return callService("patcher", "get_edit_form", [fixture_id]) },
 	get_patcher_state(): Promise<SharablePatcherState> { return callService("patcher", "get_patcher_state", []) },

@@ -2,6 +2,7 @@
 	import { computed, ref } from "vue";
 	import { usePatcherState } from "@/stores/patcher";
 	import CreateFixtureDialog from "./CreateFixtureDialog.vue";
+	import FixtureEditor from "./FixtureEditor.vue";
 
 	const state = usePatcherState();
 	const lightOptions = computed(() => {
@@ -34,6 +35,7 @@
 			</template>
 		</LargeSelect>
 		<div class="patcher-fixture-prefs">
+			<FixtureEditor v-if="selectedFixture" :selectedFixture="selectedFixture" />
 		</div>
 		<CreateFixtureDialog v-model:visible="addFixtureDialog" />
 	</div>

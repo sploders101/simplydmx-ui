@@ -11,6 +11,7 @@ import {
 	FilterCriteria,
 	JSONCommand,
 	JSONResponse,
+	CreateFixtureError,
 } from "./rpc";
 import { unwrap } from "@/scripts/helpers";
 
