@@ -13,3 +13,10 @@ app.use(router);
 app.use(createPinia());
 registerGlobals(app);
 app.mount("#app");
+
+const appHeight = () => {
+	const doc = document.documentElement;
+	doc.style.setProperty("--app-height", `${window.innerHeight}px`);
+};
+window.addEventListener("resize", appHeight);
+appHeight();

@@ -32,7 +32,7 @@
 	.app {
 		display: flex;
 		flex-flow: row nowrap;
-		height: 100vh;
+		height: var(--app-height);
 		width: 100vw;
 
 		& > .app-sidebar {
