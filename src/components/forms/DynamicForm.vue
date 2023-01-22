@@ -47,7 +47,7 @@
 		if (!('Dropdown' in props.form)) return [];
 		return exhaustiveMatch(props.form.Dropdown.item_source, {
 			"Static": (staticOptions) => staticOptions.values,
-			"TypeSpec": () => typeSpecOptions.value || [],
+			"TypeSpec": () => typeSpecOptions.value || [{ name: "Loading...", value: props.formData[(props.form as any).Dropdown.id] }],
 		});
 	});
 </script>
