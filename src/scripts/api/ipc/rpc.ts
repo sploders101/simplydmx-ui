@@ -61,6 +61,15 @@ export type CreateFixtureError = "FixtureTypeMissing" | "ControllerMissing" | { 
 export type CreateInstanceError = { InvalidData: string } | { Other: string };
 
 /**
+ * A description for a DMX driver
+ */
+export interface DMXDriverDescription {
+    name: string;
+    description: string;
+    id: string;
+}
+
+/**
  * DMX-specific components of a fixture definition.
  * 
  * This goes in the output_info, property of a `FixtureBundle` object
@@ -467,6 +476,8 @@ export const output_dmx = {
 	create_universe(name: string): Promise<Uuid> { return callService("output_dmx", "create_universe", [name]) },
 	delete_universe(universe_id: Uuid): Promise<void> { return callService("output_dmx", "delete_universe", [universe_id]) },
 	link_universe(universe_id: Uuid, driver: string, form_data: SerializedData): Promise<{ Ok: null } | { Err: LinkUniverseError }> { return callService("output_dmx", "link_universe", [universe_id, driver, form_data]) },
+	list_drivers(): Promise<DMXDriverDescription[]> { return callService("output_dmx", "list_drivers", []) },
+	list_universes(): Promise<[Uuid, string][]> { return callService("output_dmx", "list_universes", []) },
 	unlink_universe(universe_id: Uuid): Promise<void> { return callService("output_dmx", "unlink_universe", [universe_id]) },
 };
 

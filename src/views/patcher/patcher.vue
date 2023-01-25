@@ -1,5 +1,6 @@
 <script setup lang="ts">
 	import FixturesTab from "./FixturesTab.vue";
+	import UniversesTab from "./UniversesTab.vue";
 </script>
 
 <template>
@@ -7,7 +8,8 @@
 		<Tabitem tab="fixtures" class="patcher-add-tab-container">
 			<FixturesTab/>
 		</Tabitem>
-		<Tabitem tab="universes">
+		<Tabitem tab="universes" class="universes-add-tab-container">
+			<UniversesTab/>
 		</Tabitem>
 	</Tabs>
 </template>
@@ -18,6 +20,11 @@
 		width: 100%;
 		
 		.patcher-add-tab-container {
+			width: 100%;
+			height: 100%;
+		}
+
+		.universes-add-tab-container {
 			width: 100%;
 			height: 100%;
 		}

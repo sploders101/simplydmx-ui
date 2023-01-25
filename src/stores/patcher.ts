@@ -1,4 +1,3 @@
-import { defineStore } from "pinia";
 import { ref, onMounted, onUnmounted } from "vue";
 import * as ipc from "@/scripts/api/ipc";
 import { listenForUpdates } from "@/scripts/api/patcher";
