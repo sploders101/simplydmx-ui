@@ -6,8 +6,7 @@ import type {
 
 function blenderValue(value: number): BlenderValue {
 	return {
-		type: "Static",
-		value,
+		Static: value,
 	};
 }
 export async function createLayerTest(fixture_id: Uuid, red: number, green: number, blue: number) {

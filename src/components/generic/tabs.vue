@@ -30,15 +30,32 @@
 	const tabsContainer = ref<HTMLDivElement | null>(null);
 	const tabElements = ref<Array<HTMLDivElement>>([]);
 	const tabsContainerBounds = useElementBounding(tabsContainer);
-	const activeTabElementBounds = useElementBounding(() => tabElements.value[props.tabs!.findIndex((tab) => tab.id === activeTabId.value)]);
+	const activeTabElementBounds = useElementBounding(() => tabElements.value[
+		props.tabs!.findIndex((tab) => tab.id === activeTabId.value)
+	]);
 	const activeLineWidth = computed(() => activeTabElementBounds.width.value);
-	const activeLineOffset = computed(() => (activeTabElementBounds.left.value || 0) - (tabsContainerBounds.left.value || 0));
+	const activeLineOffset = computed(() =>
+		(activeTabElementBounds.left.value || 0)
+		- (tabsContainerBounds.left.value || 0)
+	);
 </script>
 
 <template>
 	<div class="sdmx-tabs">
-		<div class="tabs-container" ref="tabsContainer" :style="{ '--active-line-width': `${activeLineWidth}px`, '--active-line-offset': `${activeLineOffset}px` }">
-			<div class="tab-container" ref="tabElements" v-for="tab in props.tabs" @click.stop="activeTabId = tab.id">
+		<div
+			class="tabs-container"
+			ref="tabsContainer"
+			:style="{
+				'--active-line-width': `${activeLineWidth}px`,
+				'--active-line-offset': `${activeLineOffset}px`,
+			}"
+			>
+			<div
+				class="tab-container"
+				ref="tabElements"
+				v-for="tab in props.tabs"
+				@click.stop="activeTabId = tab.id"
+				>
 				<template v-if="'label' in tab">{{ tab.label }}</template>
 			</div>
 		</div>
@@ -87,6 +104,8 @@
 				justify-content: center;
 				align-items: center;
 				padding: 0.75rem;
+
+				font-size: 1.125em;
 
 				&:hover {
 					background-color: var(--tab-bg-hovered);

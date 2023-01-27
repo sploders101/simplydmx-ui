@@ -13,7 +13,7 @@ export type AbstractLayerLight = Record<string, BlenderValue>;
 /**
  * Value to be used in a submaster with instructions for mixing it into the result
  */
-export type BlenderValue = { type: "None" } | { type: "Static"; value: number } | { type: "Offset"; value: number };
+export type BlenderValue = "None" | { Static: number } | { Offset: number };
 
 /**
  * This contains data that indicates how a channel should be blended.
@@ -51,7 +51,7 @@ export type ChannelSize = "U8" | "U16";
 /**
  * Describes information used for controlling and blending the channel
  */
-export type ChannelType = { type: "Segmented"; segments: Segment[]; priority: BlendingScheme; snapping: SnapData | null } | { type: "Linear"; priority: BlendingScheme };
+export type ChannelType = { Segmented: { segments: Segment[]; priority: BlendingScheme; snapping: SnapData | null } } | { Linear: { priority: BlendingScheme } };
 
 /**
  * An error that could occur when creating a fixture
@@ -265,6 +265,9 @@ export type GetCreationFormError = "FixtureTypeMissing" | { Other: string };
  */
 export type GetEditFormError = "FixtureMissing" | "FixtureDefinitionMissing" | "ControllerMissing" | { ControllerError: string };
 
+/** This type is currently undocumented. I will be working to resolve this for all types in the near future. */
+export type GetLinkUniverseFormError = { ErrorFromController: string } | "ControllerNotFound";
+
 /**
  * A generic error originating from an OutputDriver interface when importing a fixture definition
  */
@@ -298,7 +301,7 @@ export type JSONResponse = { type: "CallServiceResponse"; message_id: number; re
 /**
  * An error that could occur while linking a DMX universe to a universe controller
  */
-export type LinkUniverseError = { type: "ErrorFromController"; data: RegisterUniverseError } | { type: "UniverseNotFound" } | { type: "ControllerNotFound" };
+export type LinkUniverseError = { ErrorFromController: RegisterUniverseError } | "UniverseNotFound" | "ControllerNotFound";
 
 /**
  * Data used by the mixer to blend submasters and produce a final result
@@ -348,7 +351,7 @@ export interface Personality {
 /**
  * An error returned when registering a saver. This is usually okay to unwrap, since it should be during init
  */
-export type RegisterSavableError = { type: "SaverAlreadyExists" };
+export type RegisterSavableError = "SaverAlreadyExists";
 
 /**
  * An error that occurs while registering a universe
@@ -358,12 +361,12 @@ export type RegisterUniverseError = { InvalidData: string } | { Other: string };
 /**
  * An error returned by the saver if saving data failed
  */
-export type SaveError = { type: "SaverReturnedErr"; data: { error: string } } | { type: "ErrorSerializing"; data: { error: string } } | { type: "Unsafe" };
+export type SaveError = { SaverReturnedErr: { error: string } } | { ErrorSerializing: { error: string } } | "Unsafe";
 
 /**
  * Describes the state of the show controller backend during initialization
  */
-export type SaverInitializationStatus = { type: "FinishedSafe" } | { type: "FinishedUnsafe" } | { type: "Initializing" };
+export type SaverInitializationStatus = "FinishedSafe" | "FinishedUnsafe" | "Initializing";
 
 /**
  * Identifies a segment used in a segmented channel
@@ -423,7 +426,7 @@ export interface ShowFile {
  * intermediate values don't blend, and can instead cause distraction by rapidly switching between noticably
  * discrete states.
  */
-export type SnapData = { type: "NoSnap" } | { type: "SnapAt"; data: number };
+export type SnapData = "NoSnap" | { SnapAt: number };
 
 /**
  * Defines a static submaster
@@ -478,6 +481,8 @@ export const mixer = {
 export const output_dmx = {
 	create_universe(name: string): Promise<Uuid> { return callService("output_dmx", "create_universe", [name]) },
 	delete_universe(universe_id: Uuid): Promise<void> { return callService("output_dmx", "delete_universe", [universe_id]) },
+	get_link_universe_form(driver_id: string, universe_id: Uuid | null): Promise<{ Ok: FormDescriptor } | { Err: GetLinkUniverseFormError }> { return callService("output_dmx", "get_link_universe_form", [driver_id, universe_id]) },
+	get_linked_controller(universe_id: Uuid): Promise<string | null> { return callService("output_dmx", "get_linked_controller", [universe_id]) },
 	link_universe(universe_id: Uuid, driver: string, form_data: SerializedData): Promise<{ Ok: null } | { Err: LinkUniverseError }> { return callService("output_dmx", "link_universe", [universe_id, driver, form_data]) },
 	list_drivers(): Promise<DMXDriverDescription[]> { return callService("output_dmx", "list_drivers", []) },
 	list_universes(): Promise<[Uuid, string][]> { return callService("output_dmx", "list_universes", []) },

@@ -55,8 +55,7 @@
 
 	function blenderValue(value: number): rpc.BlenderValue {
 		return {
-			type: "Static",
-			value,
+			Static: value,
 		};
 	}
 
@@ -64,8 +63,9 @@
 	const colorChannel = (size: ChannelSize): Channel => ({
 		size: size,
 		ch_type: {
-			type: "Linear",
-			priority: "LTP",
+			Linear: {
+				priority: "LTP",
+			}
 		},
 	});
 
