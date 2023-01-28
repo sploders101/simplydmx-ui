@@ -28,15 +28,16 @@
 	});
 
 	function cancelEditingFixture() {
-		personality.value = null;
-		name.value = "";
+		initializeFixtureForm(props.selectedFixture);
 	}
 
 	const personality = ref<string | null>(null);
 	const name = ref<string>("");
 
 	const addFixtureForm = ref<[FormDescriptor, any] | null>(null);
-	watch(() => props.selectedFixture, (queryFixture) => {
+	watch(() => props.selectedFixture, initializeFixtureForm, { immediate: true });
+
+	function initializeFixtureForm(queryFixture: string | null) {
 		if (queryFixture) {
 			let fixture = patcherState.value?.fixtures[queryFixture];
 			personality.value = fixture?.personality || null;
@@ -54,7 +55,7 @@
 			addFixtureForm.value = null;
 			editsMade.value = false;
 		}
-	}, { immediate: true });
+	}
 
 	const editsMade = ref(false);
 	watch([personality, name, addFixtureForm], () => editsMade.value = true, { deep: true });
