@@ -45,17 +45,15 @@ function listenForUpdates() {
 	};
 }
 
-function getUniverseState(): Promise<UniverseData> {
-	return Promise.all([
+async function getUniverseState(): Promise<UniverseData> {
+	const [driver_list, universe_list] = await Promise.all([
 		ipc.output_dmx.list_drivers(),
 		ipc.output_dmx.list_universes(),
-	])
-		.then(([driver_list, universe_list]) => {
-			return {
-				driver_list,
-				universe_list,
-			};
-		});
+	]);
+	return {
+		driver_list,
+		universe_list,
+	};
 }
 
 export function useUniverseState() {
