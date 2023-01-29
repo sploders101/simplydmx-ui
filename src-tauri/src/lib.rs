@@ -21,7 +21,7 @@ use tauri::{
 	RunEvent,
 	async_runtime::block_on,
 };
-use simplydmx::{
+use simplydmx_lib::{
 	*,
 	api_utilities::*,
 	init::async_main,

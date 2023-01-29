@@ -1,8 +1,8 @@
 [package]
-name = "app"
+name = "simplydmx"
 version = "0.1.0"
-description = "A Tauri App"
-authors = ["you"]
+description = "Stage lighting made simple, affordable, and powerful."
+authors = ["Shaun keys"]
 license = ""
 repository = ""
 edition = "2021"
@@ -22,7 +22,7 @@ serde = { version = "1.0", features = ["derive"] }
 tauri = { version = "2.0.0-alpha.1", features = ["api-all", "macos-private-api"] }
 async-std = { version = "1.10.0", features = ["tokio1"] }
 futures = "0.3.23"
-simplydmx = { path = "../../simplydmx_backend", features = ["stdout-logging", "tokio1"] }
+simplydmx_lib = { path = "../../simplydmx_backend", features = ["stdout-logging", "tokio1"] }
 
 [target.'cfg(target_os = "macos")'.dependencies]
 window-vibrancy = "0.3.2"
