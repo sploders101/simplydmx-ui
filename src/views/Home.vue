@@ -165,10 +165,10 @@
 			<p>{{ JSON.stringify(typespec) }}</p>
 		</Tabitem>
 		<Tabitem tab="test2">
-			<LargeSelect :options="[1, 2, 3, 4, 5].map((i) => ({ label: 'Test ' + i, value: i}))" v-model="selectValue" enableSearch />
+			<LargeSelect :options="[1, 2, 3, 4, 5].map((i) => ({ name: 'Test ' + i, value: i}))" v-model="selectValue" enableSearch />
 		</Tabitem>
 		<Tabitem tab="test3">
-			<LargeSelect :options="[1, 2, 3, 4, 5].map((i) => ({ label: 'Test ' + i, value: i}))" @select="log" enableSearch>
+			<LargeSelect :options="[1, 2, 3, 4, 5].map((i) => ({ name: 'Test ' + i, value: i}))" @select="log" enableSearch>
 				<template #header-right>
 					<Tooltip text="Add Fixture">
 						<Button icon subtle><Icon i="plus"/></Button>

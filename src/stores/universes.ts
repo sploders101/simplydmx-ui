@@ -11,6 +11,7 @@ interface UniverseData {
 const universeData = ref<null | UniverseData>(null);
 let unlisten: (() => void) | null = null;
 let listeners = 0;
+let waiters: Array<() => void> = [];
 
 function listenForUpdates() {
 	let unlisteners = [
@@ -32,7 +33,8 @@ function listenForUpdates() {
 		}),
 		// This event also exists, but will get used in the universe linking form to update
 		// the user if this is changed elsewhere
-		// listen<void>("dmx.universe_link_changed", { type: "None" }, () => {}),
+		// listen<void>("dmx.universe_linked", { "Uuid": "..." }, () => {}),
+		// listen<void>("dmx.universe_unlinked", { "None": null }, () => {}),
 	];
 
 	return () => {
@@ -56,10 +58,25 @@ async function getUniverseState(): Promise<UniverseData> {
 	};
 }
 
+export function waitForUniverseState(): Promise<void> {
+	return new Promise((res) => {
+		if (universeData.value) {
+			res();
+		} else {
+			waiters.push(res);
+		}
+	});
+}
+
 export function useUniverseState() {
 	onMounted(() => {
 		if (listeners === 0) {
-			getUniverseState().then((state) => universeData.value = state, console.error);
+			getUniverseState()
+				.then((state) => {
+					universeData.value = state;
+					waiters.forEach((res) => res());
+					waiters = [];
+				}, console.error);
 			unlisten = listenForUpdates();
 		}
 		listeners += 1;

@@ -1,6 +1,6 @@
 <script lang="ts">
 	export interface SelectOption {
-		label: string,
+		name: string,
 		value: any,
 	}
 	export interface SelectEvent {
@@ -10,7 +10,6 @@
 </script>
 
 <script lang="ts" setup>
-	import { randomId } from "@/scripts/random";
 	import { ref, computed, type PropType } from "vue";
 
 	const props = defineProps({
@@ -33,7 +32,7 @@
 	const search = ref("");
 	const filteredOptions = computed(() => {
 		if (!props.enableSearch) return props.options;
-		return props.options.filter(({ label }) => label.toLowerCase().includes(search.value.toLowerCase()));
+		return props.options.filter(({ name: label }) => label.toLowerCase().includes(search.value.toLowerCase()));
 	});
 	
 	function dispatchSelect(value: any, event: MouseEvent) {
@@ -50,7 +49,7 @@
 		</div>
 		<div v-for="option in filteredOptions" class="largeselect-option" :class="{ active: option.value === props.modelValue }" @click="dispatchSelect(option.value, $event)">
 			<slot name="option" :option="option">
-				{{ option.label }}
+				{{ option.name }}
 			</slot>
 		</div>
 	</div>

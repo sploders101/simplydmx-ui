@@ -486,6 +486,7 @@ export const output_dmx = {
 	link_universe(universe_id: Uuid, driver: string, form_data: SerializedData): Promise<{ Ok: null } | { Err: LinkUniverseError }> { return callService("output_dmx", "link_universe", [universe_id, driver, form_data]) },
 	list_drivers(): Promise<DMXDriverDescription[]> { return callService("output_dmx", "list_drivers", []) },
 	list_universes(): Promise<[Uuid, string][]> { return callService("output_dmx", "list_universes", []) },
+	rename_universe(universe_id: Uuid, universe_name: string): Promise<void> { return callService("output_dmx", "rename_universe", [universe_id, universe_name]) },
 	unlink_universe(universe_id: Uuid): Promise<void> { return callService("output_dmx", "unlink_universe", [universe_id]) },
 };
 

@@ -10,7 +10,7 @@
 		return state.value.fixture_order.map((value) => {
 			const fixture = state.value!.fixtures[value];
 			return {
-				label: fixture.name || fixture.id,
+				name: fixture.name || fixture.id,
 				value: fixture.id,
 			};
 		});
