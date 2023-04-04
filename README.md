@@ -41,13 +41,9 @@ and give it as many facets as we want? One UI can be simple, while the other is 
 have a common data format that works with all of them? And why can't the user have an SDK that allows them to extend the programs functionality
 with whatever outrageous thing they want, like say, a Philips Hue integration?
 
-## Why is only half of SimplyDMX open-source?
 
-The goal of open-sourcing the graphical interface is to maintain proprietary rights to SimplyDMX, while making it as open and customizable as
-possible. Shortly after the initial release (maybe during alpha or beta if I change my mind), a plugin loader and SDK will be provided, in
-addition to a self-documenting code browser to give users everything they need to write custom plugins, integrations, and user interfaces.
-This self-documenting code is actually used to generate the file at `src/scripts/api/ipc/rpc.ts`. It's a little klunky at the moment, but it
-works well and I plan to circle back to it once I have a releasable product.
+## Where can I find the business logic?
 
-The point is, I want SimplyDMX to be ultra-customizable and I don't want to hide the way things work. Unfortunately, I'm worried that if I
-release the backend source code, I won't have enough *paying* customers to support the project, so that's going to stay closed-source for now.
+As of 04/03/23, the SimplyDMX backend's source code has been released. I will no longer have as much time to work on the project, and will shift
+my focus to other areas. I have released the source code in hopes that someone can take what I've built and make it even better. The project is
+not dead; I may come back to it later if I see enough need for it, but I'm shelving it for the time being.
