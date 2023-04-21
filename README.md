@@ -44,8 +44,4 @@ with whatever outrageous thing they want, like say, a Philips Hue integration?
 
 ## Where can I find the business logic?
 
-As of 04/03/23, the SimplyDMX backend's source code has been released. I will no longer have as much time to work on the project, and will shift
-my focus to other areas. I have released the source code in hopes that someone can take what I've built and make it even better. The project is
-not dead; I may come back to it later if I see enough need for it, but I'm shelving it for the time being.
-
 The SimplyDMX backend can be found here on GitHub at https://github.com/sploders101/simplydmx
