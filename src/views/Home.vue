@@ -61,6 +61,7 @@
 
 	// Examples
 	const colorChannel = (size: ChannelSize): Channel => ({
+		intensity_emulation: null,
 		size: size,
 		ch_type: {
 			Linear: {
@@ -100,6 +101,7 @@
 					},
 				},
 				output_driver: "DMX",
+				control_groups: [],
 			},
 			output_info: {
 				personalities: {

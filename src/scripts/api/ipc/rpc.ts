@@ -11,6 +11,11 @@ import { callService } from "./agnostic_abstractions";
 export type AbstractLayerLight = Record<string, BlenderValue>;
 
 /**
+ * Describes an image to display
+ */
+export type AssetDescriptor = { BuiltIn: string } | { SVGInline: string };
+
+/**
  * Value to be used in a submaster with instructions for mixing it into the result
  */
 export type BlenderValue = "None" | { Static: number } | { Offset: number };
@@ -37,6 +42,7 @@ export type BlendingScheme = "HTP" | "LTP";
  * Information about a specific channel available on the fixture
  */
 export interface Channel {
+    intensity_emulation: string[] | null;
     size: ChannelSize;
     default?: number;
     ch_type: ChannelType;
@@ -52,6 +58,11 @@ export type ChannelSize = "U8" | "U16";
  * Describes information used for controlling and blending the channel
  */
 export type ChannelType = { Segmented: { segments: Segment[]; priority: BlendingScheme; snapping: SnapData | null } } | { Linear: { priority: BlendingScheme } };
+
+/**
+ * Contains data about a group of channels that can be controlled using a special controller
+ */
+export type ControlGroup = { Intensity: string } | { RGBGroup: { red: string; green: string; blue: string } } | { CMYKGroup: { cyan: string; magenta: string; yellow: string; black: string } } | { PanTilt: { pan: string; tilt: string } } | { Gobo: string } | { ColorWheel: string } | { Zoom: string } | { GenericInput: string };
 
 /**
  * An error that could occur when creating a fixture
@@ -182,6 +193,7 @@ export interface FixtureInfo {
     channels: Record<string, Channel>;
     personalities: Record<string, Personality>;
     output_driver: string;
+    control_groups: ControlGroup[];
 }
 
 /**
@@ -202,6 +214,13 @@ export interface FixtureMeta {
     manufacturer: string | null;
     manual_link: string | null;
 }
+
+/**
+ * Represents the finished, pre-mixed values of a light.
+ * 
+ * `Attribute ID --> Value`
+ */
+export type FixtureMixerOutput = Record<string, number>;
 
 /**
  * Describes a form-style UI using a frontend-agnostic generic data structure
@@ -254,6 +273,13 @@ export interface FormTextbox {
     id: string;
     value: string | null;
 }
+
+/**
+ * Represents the full output of the mixer, ready to send out to the lights.
+ * 
+ * `Fixture ID --> Attribute ID --> Value`
+ */
+export type FullMixerOutput = Record<Uuid, FixtureMixerOutput>;
 
 /**
  * An error that could occur while retrieving a fixture creation form
@@ -375,8 +401,13 @@ export interface Segment {
     start: number;
     end: number;
     name: string;
-    id: string;
+    display: SegmentDisplay;
 }
+
+/**
+ * Describes how a segment should be displayed to the user in the UI
+ */
+export type SegmentDisplay = { Gobo: { asset: AssetDescriptor } } | { Color: { red: number; green: number; blue: number } } | { Image: { asset: AssetDescriptor } } | "Other";
 
 /**
  * Data type used to hold a serialized instance of an arbitrary data type.
@@ -472,6 +503,7 @@ export const mixer = {
 	get_blind_opacity(): Promise<number | null> { return callService("mixer", "get_blind_opacity", []) },
 	get_layer_contents(submaster_id: Uuid): Promise<StaticLayer | null> { return callService("mixer", "get_layer_contents", [submaster_id]) },
 	get_layer_opacity(submaster_id: Uuid): Promise<number | null> { return callService("mixer", "get_layer_opacity", [submaster_id]) },
+	request_blend(): Promise<void> { return callService("mixer", "request_blend", []) },
 	revert_blind(): Promise<void> { return callService("mixer", "revert_blind", []) },
 	set_blind_opacity(opacity: number): Promise<void> { return callService("mixer", "set_blind_opacity", [opacity]) },
 	set_layer_contents(submaster_id: Uuid, submaster_delta: SubmasterData): Promise<boolean> { return callService("mixer", "set_layer_contents", [submaster_id, submaster_delta]) },
